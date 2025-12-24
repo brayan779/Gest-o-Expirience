@@ -1,0 +1,224 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrinho - Alvorecer Café</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Cardo:wght@400;700&family=Marcellus&family=EB+Garamond:wght@400;500;600;700&family=Bodoni+Moda:wght@400;500;600&family=Libre+Baskerville:wght@400;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* MANTIDO TODO O CSS ORIGINAL DO CÓDIGO 2 */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --serenity-1: #F0F7FF; --serenity-2: #D4E4F7; --serenity-3: #A8C6E0;
+            --authentic-1: #3E2723; --authentic-2: #5D4037; --authentic-3: #8D6E63;
+            --neutral-1: #FFFCF5; --neutral-2: #F5F2ED; --neutral-3: #2C2C2C;
+            --accent: #8D6E63; --accent-light: #A8C6E0;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-sm: 0 2px 8px rgba(62, 39, 35, 0.08);
+            --shadow-md: 0 4px 20px rgba(62, 39, 35, 0.12);
+            --gradient-bg: linear-gradient(135deg, var(--serenity-1) 0%, var(--serenity-2) 100%);
+            --gradient-accent: linear-gradient(135deg, var(--authentic-2) 0%, var(--authentic-1) 100%);
+        }
+        body { font-family: 'Cormorant Garamond', serif; background-color: var(--serenity-1); color: var(--authentic-3); line-height: 1.6; min-height: 100vh; overflow-x: hidden; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 clamp(10px, 3vw, 30px); }
+
+        /* HEADER */
+        .header-top { padding: 12px 0; position: fixed; top: 15px; left: 50%; transform: translateX(-50%); width: 95%; z-index: 100; border-radius: 50px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); backdrop-filter: blur(15px); border: 1px solid rgba(139, 110, 99, 0.3); background: rgba(240, 247, 255, 0.85); transition: var(--transition); }
+        .header-top .container { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'Playfair Display', serif; font-size: clamp(1.5rem, 4vw, 2.2rem); font-weight: 700; color: var(--authentic-1); display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .logo::before { content: '☕'; font-size: 1.8rem; color: var(--authentic-2); }
+        .nav-top { display: flex; gap: clamp(10px, 2vw, 20px); list-style: none; }
+        .nav-top a { color: var(--authentic-2); text-decoration: none; font-weight: 500; transition: var(--transition); padding: 6px 12px; border-radius: 20px; font-size: clamp(0.9rem, 2vw, 1.1rem); }
+        .nav-top a:hover { background: rgba(141, 110, 99, 0.1); color: var(--authentic-1); }
+
+        /* HEADER MOBILE */
+        .header-bottom { position: fixed; bottom: 0; left: 2.5%; width: 95%; background: rgba(141, 110, 99, 0.95); z-index: 1000; border-radius: 25px; display: none; }
+        .nav-bottom { display: flex; justify-content: space-around; padding: 10px 0; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: var(--neutral-1); flex: 1; padding: 4px; }
+
+        /* LAYOUT GERAL */
+        .main-content { padding: 120px 0 100px; display: flex; flex-direction: column; gap: 40px; }
+        .hero-carrinho { text-align: center; margin-bottom: 20px; }
+        .hero-carrinho h1 { font-family: 'EB Garamond', serif; font-size: clamp(2rem, 6vw, 3rem); color: var(--authentic-1); font-weight: 600; }
+        .carrinho-layout { display: grid; grid-template-columns: 1fr 400px; gap: 40px; align-items: start; }
+
+        /* ITENS DO CARRINHO */
+        .carrinho-itens { display: flex; flex-direction: column; gap: 20px; }
+        .carrinho-item { background: var(--neutral-1); border-radius: 20px; padding: 25px; display: grid; grid-template-columns: 100px 1fr auto; gap: 25px; align-items: center; transition: var(--transition); border: 1px solid rgba(141, 110, 99, 0.1); box-shadow: var(--shadow-sm); }
+        .carrinho-item:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+        .item-imagem { width: 100px; height: 100px; border-radius: 15px; overflow: hidden; background-color: var(--serenity-2); display: flex; align-items: center; justify-content: center; font-size: 2rem; color: white;}
+        .item-imagem img { width: 100%; height: 100%; object-fit: cover; }
+        .item-nome { font-family: 'EB Garamond', serif; font-size: 1.4rem; color: var(--authentic-1); font-weight: 600; }
+        .item-preco { font-size: 1.3rem; color: var(--accent); font-weight: 700; font-family: 'Inter', sans-serif; }
+
+        /* CONTROLES DO ITEM */
+        .item-controles { display: flex; flex-direction: column; align-items: flex-end; gap: 15px; }
+        .item-quantidade { display: flex; align-items: center; gap: 10px; background: rgba(141, 110, 99, 0.05); padding: 8px 15px; border-radius: 50px; }
+        .qtd-btn { background: none; border: none; color: var(--accent); font-size: 1.2rem; cursor: pointer; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: var(--transition); }
+        .qtd-btn:hover { background: rgba(141, 110, 99, 0.1); }
+        .qtd-valor { font-size: 1.1rem; font-weight: 600; min-width: 30px; text-align: center; color: var(--authentic-1); }
+        .item-remover { background: rgba(141, 110, 99, 0.05); color: var(--authentic-3); padding: 8px 15px; border-radius: 8px; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; transition: var(--transition); border: 1px solid transparent; }
+        .item-remover:hover { background: #ffebee; color: #d32f2f; border-color: #ffcdd2; }
+
+        /* RESUMO */
+        .resumo-pedido { background: var(--neutral-1); border-radius: 20px; padding: 30px; position: sticky; top: 120px; border: 1px solid rgba(141, 110, 99, 0.1); box-shadow: var(--shadow-md); }
+        .resumo-titulo { font-family: 'EB Garamond', serif; font-size: 1.6rem; color: var(--authentic-1); margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid rgba(141, 110, 99, 0.1); font-weight: 600; }
+        .resumo-linha { display: flex; justify-content: space-between; margin-bottom: 15px; }
+        .resumo-total { font-size: 1.3rem; color: var(--accent); font-weight: 700; border-top: 1px solid rgba(141, 110, 99, 0.1); padding-top: 15px; margin-top: 15px; }
+        .btn-finalizar { width: 100%; background: var(--gradient-accent); color: var(--neutral-1); border: none; padding: 18px; border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: var(--transition); margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; }
+        .btn-finalizar:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(141, 110, 99, 0.3); }
+
+        /* CARRINHO VAZIO */
+        .carrinho-vazio { text-align: center; padding: 60px 20px; background: var(--neutral-1); border-radius: 20px; margin-top: 20px; border: 1px solid rgba(141, 110, 99, 0.1); }
+        .carrinho-vazio h2 { font-family: 'EB Garamond', serif; font-size: 2rem; color: var(--authentic-1); margin-bottom: 15px; }
+        .btn-voltar { display: inline-flex; align-items: center; gap: 10px; background: var(--accent); color: var(--neutral-1); padding: 15px 30px; border-radius: 50px; text-decoration: none; font-weight: 600; margin-top: 20px; transition: var(--transition); }
+        .btn-voltar:hover { background: var(--authentic-2); transform: translateY(-3px); }
+
+        /* MEDIA QUERIES */
+        @media (max-width: 1024px) { .carrinho-layout { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) {
+            .header-bottom { display: block; } .nav-top { display: none; }
+            .carrinho-item { grid-template-columns: 80px 1fr; }
+            .item-controles { grid-column: 1 / -1; flex-direction: row; justify-content: space-between; width: 100%; border-top: 1px solid #eee; padding-top: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header-top">
+        <div class="container">
+            <a href="{% url 'home' %}" class="logo">Alvorecer Café</a>
+            <nav>
+                <ul class="nav-top">
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="{% url 'produtos:cardapio' %}">Cardápio</a></li>
+                    <li><a href="{% url 'dashboard' %}">Area Do Franqueado</a></li> <li><a href="{% url 'logout' %}">Sair</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="header-bottom">
+        <nav class="nav-bottom">
+            <a href="{% url 'home' %}" class="nav-item">
+                <i class="fas fa-home nav-icon"></i>
+                <span class="nav-label">Home</span>
+            </a>
+            <a href="{% url 'produtos:cardapio' %}" class="nav-item">
+                <i class="fas fa-coffee nav-icon"></i>
+                <span class="nav-label">Cardápio</span>
+            </a>
+            <a href="{% url 'produtos:ver_carrinho' %}" class="nav-item active">
+                <i class="fas fa-shopping-cart nav-icon"></i>
+                <span class="nav-label">Carrinho</span>
+            </a>
+            <a href="{% url 'logout' %}" class="nav-item">
+                <i class="fas fa-sign-out-alt nav-icon"></i>
+                <span class="nav-label">Sair</span>
+            </a>
+        </nav>
+    </div>
+
+    <main class="main-content container">
+
+        <div class="hero-carrinho">
+            <h1>Seu Carrinho</h1>
+            <p>Revise seus itens antes de finalizar o pedido</p>
+        </div>
+
+        {% if itens %}
+        <div class="carrinho-layout">
+
+            <div class="carrinho-itens">
+
+                {% for item in itens %}
+                <div class="carrinho-item">
+                    <div class="item-imagem">
+                        {% if item.produto.imagem %}
+                            <img src="{{ item.produto.imagem.url }}" alt="{{ item.nome }}">
+                        {% else %}
+                            <i class="fas fa-coffee"></i>
+                        {% endif %}
+                    </div>
+
+                    <div class="item-info">
+                        <h3 class="item-nome">{{ item.nome }}</h3>
+                        <p class="item-variacao">Quantidade: {{ item.quantidade }}</p>
+                        <p class="item-preco">R$ {{ item.preco_unitario|floatformat:2 }}</p>
+                    </div>
+
+                    <div class="item-controles">
+                        <div class="item-quantidade">
+                            <a href="{% url 'produtos:diminuir_item_carrinho' item.id %}" class="qtd-btn">-</a>
+                            <span class="qtd-valor">{{ item.quantidade }}</span>
+                            <a href="{% url 'produtos:aumentar_item_carrinho' item.id %}" class="qtd-btn">+</a>
+                        </div>
+
+                        <a href="{% url 'produtos:remover_item_carrinho' item.id %}" class="item-remover">
+                            <i class="fas fa-trash-alt"></i> Remover
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+                </div>
+
+            <div class="resumo-pedido">
+                <h3 class="resumo-titulo">Resumo do Pedido</h3>
+
+                <div class="resumo-linha">
+                    <span class="resumo-label">Subtotal</span>
+                    <span class="resumo-valor">R$ {{ total_geral|floatformat:2 }}</span>
+                </div>
+
+                <div class="resumo-linha">
+                    <span class="resumo-label">Taxa de Serviço</span>
+                    <span class="resumo-valor">R$ 0,00</span>
+                </div>
+
+                <div class="resumo-linha resumo-total">
+                    <span>Total</span>
+                    <span class="resumo-valor">R$ {{ total_geral|floatformat:2 }}</span>
+                </div>
+
+                <div class="cupom-input">
+                    <input type="text" placeholder="Cupom de desconto">
+                    <button>Aplicar</button>
+                </div>
+
+                <a href="{% url 'produtos:finalizar_pedido' %}" class="btn-finalizar">
+                    <i class="fas fa-check-circle"></i> Finalizar Pedido
+                </a>
+
+                <div class="continuar-comprando">
+                    <a href="{% url 'produtos:cardapio' %}">
+                        <i class="fas fa-arrow-left"></i> Continuar Comprando
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {% else %}
+        <div class="carrinho-vazio">
+            <div class="carrinho-vazio-icon">
+                <i class="fas fa-shopping-basket"></i>
+            </div>
+            <h2>Seu carrinho está vazio</h2>
+            <p>Parece que você ainda não escolheu seu café favorito hoje.</p>
+            <a href="{% url 'produtos:cardapio' %}" class="btn-voltar">
+                Ir para o Cardápio
+            </a>
+        </div>
+        {% endif %}
+
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Alvorecer Café. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

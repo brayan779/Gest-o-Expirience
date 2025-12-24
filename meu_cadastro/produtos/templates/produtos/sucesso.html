@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedido Confirmado!</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        .card-sucesso {
+            background: #111;
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid #333;
+            max-width: 400px;
+        }
+        .check-icon {
+            font-size: 50px;
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+        h1 { margin-bottom: 10px; }
+        p { color: #888; margin-bottom: 30px; }
+        .btn-voltar {
+            display: inline-block;
+            background: #fff;
+            color: #000;
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .btn-voltar:hover { background: #ccc; }
+    </style>
+</head>
+<body>
+
+    <div class="card-sucesso">
+        <div class="check-icon">✔</div>
+        <h1>Pedido Recebido!</h1>
+        <p>Olá <strong>{{ pedido.nome_cliente }}</strong>, seu pedido nº {{ pedido.id }} já está sendo preparado e será entregue em breve.</p>
+
+        <a href="{% url 'produtos:home' %}" class="btn-voltar">Fazer outro pedido</a>
+    </div>
+
+</body>
+</html>

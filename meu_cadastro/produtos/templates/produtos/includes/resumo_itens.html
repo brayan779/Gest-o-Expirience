@@ -1,0 +1,8 @@
+{% for item in itens_carrinho %}
+<div style="display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 5px;">
+    <span>{{ item.quantidade }}x {{ item.nome }}</span>
+    <span>R$ {{ item.subtotal|floatformat:2 }}</span>
+</div>
+{% empty %}
+<p style="color: #666; text-align: center;">O carrinho está vazio.</p>
+{% endfor %}

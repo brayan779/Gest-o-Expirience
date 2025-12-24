@@ -1,0 +1,297 @@
+    {% load static %}
+    <!DOCTYPE html>
+    <html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Conveniência Express</title>
+
+        <style>
+            /* ESTILO GERAL - FUNDO PRETO RESTAURADO */
+            body {
+                background-color: #000 !important;
+                color: #fff;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                margin: 0;
+                padding: 0;
+                scroll-behavior: smooth;
+            }
+
+            .header-cliente {
+                background: #111;
+                padding: 15px 5%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-bottom: 2px solid #ffc107;
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+            }
+
+            .logo-express {
+                color: #ffc107;
+                font-size: 1.5rem;
+                font-weight: bold;
+                text-decoration: none;
+                letter-spacing: 2px;
+            }
+
+            .nav-links { display: flex; gap: 25px; align-items: center; }
+            .nav-links a { color: #fff; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: 0.3s; }
+            .nav-links a:hover { color: #ffc107; }
+
+            .btn-parceiro {
+                border: 1px solid #ffc107;
+                padding: 6px 18px;
+                border-radius: 20px;
+                color: #ffc107 !important;
+                font-weight: bold;
+            }
+
+            .btn-parceiro:hover { background: #ffc107; color: #000 !important; }
+
+            .hero-title {
+                text-align: center;
+                padding: 40px 20px;
+                background: linear-gradient(180deg, #111 0%, #000 100%);
+            }
+
+            .hero-title h1 { letter-spacing: 4px; font-size: 2.5rem; margin: 0; color: #fff; }
+
+            .filtros { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin: 20px 0 30px; }
+            .filtros .btn-filtro {
+                    background: #111;
+                    border: 1px solid #333;
+                    color: #fff;
+                    padding: 8px 20px;
+                    border-radius: 20px;
+                    cursor: pointer;
+                    font-size: 0.8rem;
+                    transition: 0.3s;
+                    text-decoration: none; /* Importante para não ficar com traço embaixo */
+                    display: inline-block; /* Importante para o link aceitar o padding */
+            }
+
+            .filtros .btn-filtro.active, .filtros .btn-filtro:hover {
+                background: #ffc107;
+                color: #000;
+                border-color: #ffc107;
+            }
+
+            .container-produtos {
+                display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 25px; padding: 20px 5%; max-width: 1200px; margin: 0 auto;
+            }
+
+            .produto-card {
+                background-color: #111; border: 1px solid #222; border-radius: 15px;
+                overflow: hidden; transition: 0.3s;
+            }
+            .produto-card:hover { transform: translateY(-8px); border-color: #444; }
+
+            .icon-area {
+                background-color: #1a1a1a; height: 180px; display: flex;
+                align-items: center; justify-content: center;
+            }
+            .icon-area img { width: 120px; height: 120px; object-fit: contain; }
+
+            .info-area { padding: 20px; }
+            .badge {
+                background: #222; color: #ffc107; font-size: 10px; padding: 4px 10px;
+                border-radius: 5px; margin-bottom: 10px; display: inline-block; border: 1px solid #333;
+            }
+            .info-area h3 { margin: 5px 0; font-size: 1.2rem; }
+            .info-area p { color: #888; font-size: 0.9rem; min-height: 40px; }
+
+            .preco-acao { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; }
+            .preco { font-weight: bold; font-size: 1.3rem; color: #25d366; }
+
+            .btn-mais {
+                background: #ffc107; color: #000; border-radius: 50%; width: 35px; height: 35px;
+                display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+                font-weight: bold; cursor: pointer; border: none;
+            }
+
+            .finalizar {
+                max-width: 600px; margin: 80px auto; padding: 40px;
+                background: #080808; border-radius: 20px; border: 1px solid #1a1a1a;
+            }
+
+            .input-group label { display: block; margin-bottom: 8px; font-size: 14px; color: #888; }
+            input, textarea {
+                width: 100%; background: #000; border: 1px solid #222; color: #fff;
+                padding: 15px; border-radius: 10px; margin-bottom: 20px;
+            }
+            /* Estilo da mensagem flutuante "Adicionado!" */
+        .aviso-adicionado {
+            position: absolute;
+            background: #25d366;
+            color: #000;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            bottom: 45px;
+            right: 0;
+            animation: subir_e_sumir 0.8s ease-out forwards;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Animação para a mensagem subir e desaparecer */
+        @keyframes subir_e_sumir {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-20px); opacity: 0; }
+        }
+
+        /* Efeito de brilho/pulso no botão ao clicar */
+        .btn-mais.clicado {
+            animation: brilho_click 0.3s ease-in-out;
+        }
+
+        @keyframes brilho_click {
+            0% { box-shadow: 0 0 0px #ffc107; transform: scale(1); }
+            50% { box-shadow: 0 0 15px #ffc107; transform: scale(1.2); }
+            100% { box-shadow: 0 0 0px #ffc107; transform: scale(1); }
+        }
+
+        /* Necessário para alinhar o aviso corretamente */
+        .preco-acao {
+            position: relative;
+        }
+        </style>
+    </head>
+    <body>
+
+    <header class="header-cliente">
+        <a href="/" class="logo-express">EXPRESS</a>
+        <nav class="nav-links">
+            <a href="/">🛍️ Catálogo</a>
+            <a href="{% url 'login' %}" class="btn-parceiro">🤝 Sou Parceiro</a>
+        </nav>
+    </header>
+
+    <div class="hero-title">
+        <h1>CONVENIÊNCIA EXPRESS</h1>
+    </div>
+
+    <div class="filtros">
+    <a href="{% url 'produtos:home' %}"
+       class="btn-filtro {% if not request.GET.categoria %}active{% endif %}">
+       TODOS
+    </a>
+
+    {% for cat in categorias %}
+        <a href="{% url 'produtos:home' %}?categoria={{ cat.id }}"
+           class="btn-filtro {% if request.GET.categoria == cat.id|stringformat:'i' %}active{% endif %}">
+           {{ cat.nome|upper }}
+        </a>
+    {% endfor %}
+</div>
+
+    <div class="container-produtos">
+        {% for produto in produtos %}
+        <div class="produto-card">
+            <div class="icon-area">
+                {% if produto.imagem %}
+                    <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}">
+                {% endif %}
+            </div>
+            <div class="info-area">
+                <span class="badge">{{ produto.categoria.nome|upper }}</span>
+                <h3>{{ produto.nome }}</h3>
+                <p>{{ produto.descricao }}</p>
+                <div class="preco-acao">
+                    <span class="preco">R$ {{ produto.preco }}</span>
+                    <button type="button"
+                            onclick="atualizarCarrinho('{% url 'produtos:carrinho_ajax' produto.id 'adicionar' %}')"
+                            class="btn-mais">
+                        +
+                    </button>
+</div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <section class="finalizar" id="checkout">
+        <h2 style="text-align: center; color: #ffc107;">🛒 SEU PEDIDO</h2>
+        <form action="{% url 'produtos:finalizar_pedido' %}" method="POST">
+            {% csrf_token %}
+            <div class="input-group">
+                <label>Nome Completo *</label>
+                <input type="text" name="nome_completo" required>
+            </div>
+            <div class="input-group">
+                <label>Telefone (WhatsApp) *</label>
+                <input type="text" name="telefone" placeholder="(00) 00000-0000" required>
+            </div>
+            <div class="input-group">
+                <label>Endereço de Entrega *</label>
+                <textarea name="endereco" rows="3" placeholder="Rua, número, bairro e referência" required></textarea>
+            </div>
+
+            <div id="resumo-carrinho-container" style="background: #000; padding: 20px; border-radius: 12px; border: 1px dashed #333; margin-bottom: 25px;">
+                {% include 'produtos/includes/resumo_itens.html' %}
+            </div>
+
+            <button type="submit" style="background: #ffc107; color: #000; width: 100%; border: none; padding: 18px; border-radius: 10px; font-weight: bold; font-size: 1.1rem; cursor: pointer;">
+                CONFIRMAR PEDIDO NO WHATSAPP
+            </button>
+        </form>
+    </section>
+
+    <script>
+    // 1. Filtros de categoria (Ajustado para funcionar com seus links de categoria)
+    document.querySelectorAll('.btn-filtro').forEach(button => {
+        button.addEventListener('click', function() {
+            // Remove 'active' de todos e coloca no clicado
+            document.querySelectorAll('.btn-filtro').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+    // 2. Função ÚNICA e OFICIAL para o Carrinho
+    function atualizarCarrinho(urlDoDjango) {
+        // Pega o botão que foi clicado para fazer a animação
+        const botaoClicado = event ? event.currentTarget : null;
+
+        fetch(urlDoDjango, {
+            method: 'GET',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Erro na rede');
+            return response.json();
+        })
+        .then(data => {
+            if (data.sucesso) {
+                // ATUALIZA A LISTA: Injeta o HTML novo na div do carrinho
+                const container = document.getElementById('resumo-carrinho-container');
+                if (container) {
+                    container.innerHTML = data.html;
+                }
+
+                // ATUALIZA O TOTAL: Procura a div de total que criamos
+                const totalDisplay = document.getElementById('total-carrinho-display');
+                if (totalDisplay) {
+                    totalDisplay.innerText = `TOTAL: ${data.total}`;
+                }
+
+                // FEEDBACK VISUAL: Animação de brilho no botão +
+                if (botaoClicado) {
+                    botaoClicado.classList.add('clicado');
+                    setTimeout(() => botaoClicado.classList.remove('clicado'), 300);
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao atualizar o carrinho:', error);
+            alert('Erro ao adicionar produto. Tente novamente.');
+        });
+    }
+</script>
+
+    </body>
+    </html>

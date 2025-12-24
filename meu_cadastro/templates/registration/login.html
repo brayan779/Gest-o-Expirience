@@ -1,0 +1,17 @@
+<style>
+    body { background: #000; color: #fff; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+    .login-card { background: #111; padding: 40px; border-radius: 12px; border: 1px solid #333; width: 300px; text-align: center; }
+    h2 { color: #ffc107; margin-bottom: 20px; }
+    input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 6px; border: 1px solid #333; background: #000; color: #fff; }
+    button { width: 100%; padding: 12px; background: #25d366; border: none; border-radius: 6px; color: #000; font-weight: bold; cursor: pointer; margin-top: 10px; }
+</style>
+
+<div class="login-card">
+    <h2>Acesso Restrito</h2>
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="Usuário" required>
+        <input type="password" name="password" placeholder="Senha" required>
+        <button type="submit">Entrar no Painel</button>
+    </form>
+</div>

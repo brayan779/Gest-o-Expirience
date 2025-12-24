@@ -1,0 +1,22 @@
+<h3 style="font-size: 1rem; margin-bottom: 20px;">Resumo dos Itens</h3>
+<div id="itens-lista">
+    {% for item in itens_carrinho %}
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <span>
+                <button type="button" onclick="atualizarCarrinho('{{ item.produto_id }}', 'remover')"
+                   style="background:transparent; color: #ff4444; cursor:pointer; margin-right: 15px; font-weight: bold; border: 1px solid #ff4444; padding: 2px 8px; border-radius: 5px;">
+                   -
+                </button>
+                {{ item.quantidade }}x {{ item.nome }}
+            </span>
+            <span style="color: #25d366;">R$ {{ item.subtotal }}</span>
+        </div>
+    {% empty %}
+        <p id="carrinho-vazio" style="text-align: center; color: #666;">O carrinho está vazio.</p>
+    {% endfor %}
+</div>
+
+<div style="display: flex; justify-content: space-between; font-size: 1.4rem; font-weight: bold; border-top: 1px solid #222; padding-top: 15px; margin-top: 15px;">
+    <span>TOTAL:</span>
+    <span id="total-valor" style="color: #ffc107;">R$ {{ total_carrinho }}</span>
+</div>

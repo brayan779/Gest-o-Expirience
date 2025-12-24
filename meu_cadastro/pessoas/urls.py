@@ -1,9 +1,8 @@
-# pessoas/urls.py
-
 from django.urls import path
 from . import views
 
+app_name = 'pessoas'
+
 urlpatterns = [
-    path('cadastrar/', views.cadastrar_pessoa, name='cadastrar_pessoa'),
-    path('sucesso/', views.sucesso, name='sucesso'),
+    # Deixamos vazio ou apenas com rotas que realmente existam no seu views.py
 ]

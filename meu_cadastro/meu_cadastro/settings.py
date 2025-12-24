@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'pessoas',
+    'pessoas.apps.PessoasConfig',   # MANTENHA ESTA (ou a que você usava, mas só uma)
+    'produtos.apps.ProdutosConfig',
+
 ]
 
 MIDDLEWARE = [
@@ -52,13 +55,18 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'meu_cadastro.urls'
 
+
+
+# TEMPLATES CORRIGIDO
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
+        # FORÇANDO O DJANGO A PROCURAR NOS LUGARES CERTOS:
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'APP_DIRS': True, # Mantemos TRUE para segurança
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug', # Adicionei o debug que estava faltando
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -116,8 +124,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+import os
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'produtos:painel_dono'
+LOGOUT_REDIRECT_URL = 'login'
