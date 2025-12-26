@@ -1,187 +1,579 @@
-    {% load static %}
-    <!DOCTYPE html>
-    <html lang="pt-br">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Conveniência Express</title>
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conveniência Express</title>
 
-        <style>
-            /* ESTILO GERAL - FUNDO PRETO RESTAURADO */
-            body {
-                background-color: #000 !important;
-                color: #fff;
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                margin: 0;
-                padding: 0;
-                scroll-behavior: smooth;
-            }
+    <style>
+        /* ESTILO GERAL - FUNDO PRETO COM BLUR */
+        body {
+            background-color: #000 !important;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+        }
 
-            .header-cliente {
-                background: #111;
-                padding: 15px 5%;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                border-bottom: 2px solid #ffc107;
-                position: sticky;
-                top: 0;
-                z-index: 1000;
-            }
+        /* HEADER SIMPLES E MAIS FINO */
+        .header-cliente {
+            background: rgba(0, 0, 0, 0.95);
+            padding: 10px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 102, 0, 0.3);
+        }
 
-            .logo-express {
-                color: #ffc107;
-                font-size: 1.5rem;
-                font-weight: bold;
-                text-decoration: none;
-                letter-spacing: 2px;
-            }
+        .logo-express {
+            color: #ff6600;
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-decoration: none;
+            letter-spacing: 3px;
+        }
 
-            .nav-links { display: flex; gap: 25px; align-items: center; }
-            .nav-links a { color: #fff; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: 0.3s; }
-            .nav-links a:hover { color: #ffc107; }
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
 
-            .btn-parceiro {
-                border: 1px solid #ffc107;
-                padding: 6px 18px;
-                border-radius: 20px;
-                color: #ffc107 !important;
-                font-weight: bold;
-            }
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: 0.3s;
+            opacity: 0.9;
+        }
 
-            .btn-parceiro:hover { background: #ffc107; color: #000 !important; }
+        .nav-links a:hover {
+            color: #ff6600;
+            opacity: 1;
+        }
 
-            .hero-title {
-                text-align: center;
-                padding: 40px 20px;
-                background: linear-gradient(180deg, #111 0%, #000 100%);
-            }
-
-            .hero-title h1 { letter-spacing: 4px; font-size: 2.5rem; margin: 0; color: #fff; }
-
-            .filtros { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin: 20px 0 30px; }
-            .filtros .btn-filtro {
-                    background: #111;
-                    border: 1px solid #333;
-                    color: #fff;
-                    padding: 8px 20px;
-                    border-radius: 20px;
-                    cursor: pointer;
-                    font-size: 0.8rem;
-                    transition: 0.3s;
-                    text-decoration: none; /* Importante para não ficar com traço embaixo */
-                    display: inline-block; /* Importante para o link aceitar o padding */
-            }
-
-            .filtros .btn-filtro.active, .filtros .btn-filtro:hover {
-                background: #ffc107;
-                color: #000;
-                border-color: #ffc107;
-            }
-
-            .container-produtos {
-                display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                gap: 25px; padding: 20px 5%; max-width: 1200px; margin: 0 auto;
-            }
-
-            .produto-card {
-                background-color: #111; border: 1px solid #222; border-radius: 15px;
-                overflow: hidden; transition: 0.3s;
-            }
-            .produto-card:hover { transform: translateY(-8px); border-color: #444; }
-
-            .icon-area {
-                background-color: #1a1a1a; height: 180px; display: flex;
-                align-items: center; justify-content: center;
-            }
-            .icon-area img { width: 120px; height: 120px; object-fit: contain; }
-
-            .info-area { padding: 20px; }
-            .badge {
-                background: #222; color: #ffc107; font-size: 10px; padding: 4px 10px;
-                border-radius: 5px; margin-bottom: 10px; display: inline-block; border: 1px solid #333;
-            }
-            .info-area h3 { margin: 5px 0; font-size: 1.2rem; }
-            .info-area p { color: #888; font-size: 0.9rem; min-height: 40px; }
-
-            .preco-acao { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; }
-            .preco { font-weight: bold; font-size: 1.3rem; color: #25d366; }
-
-            .btn-mais {
-                background: #ffc107; color: #000; border-radius: 50%; width: 35px; height: 35px;
-                display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
-                font-weight: bold; cursor: pointer; border: none;
-            }
-
-            .finalizar {
-                max-width: 600px; margin: 80px auto; padding: 40px;
-                background: #080808; border-radius: 20px; border: 1px solid #1a1a1a;
-            }
-
-            .input-group label { display: block; margin-bottom: 8px; font-size: 14px; color: #888; }
-            input, textarea {
-                width: 100%; background: #000; border: 1px solid #222; color: #fff;
-                padding: 15px; border-radius: 10px; margin-bottom: 20px;
-            }
-            /* Estilo da mensagem flutuante "Adicionado!" */
-        .aviso-adicionado {
-            position: absolute;
-            background: #25d366;
-            color: #000;
-            padding: 4px 10px;
+        .btn-parceiro {
+            border: 1px solid #ff6600;
+            padding: 5px 15px;
             border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            bottom: 45px;
+            color: #ff6600 !important;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.8rem;
+        }
+
+        .btn-parceiro:hover {
+            background: #ff6600;
+            color: #000 !important;
+        }
+
+        /* HERO COM IMAGEM DE FUNDO */
+        .hero-title {
+            text-align: center;
+            padding: 80px 20px;
+            background:
+                linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9)),
+                url('https://images.unsplash.com/photo-1544025162-d76694265947?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-title h1 {
+            letter-spacing: 6px;
+            font-size: 2.8rem;
+            margin: 0 0 15px 0;
+            color: #fff;
+            text-transform: uppercase;
+            font-weight: 800;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+        }
+
+        /* FILTROS CIRCULARES - ESTILO INSTAGRAM STORIES */
+        .filtros-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 40px 0 50px;
+            flex-wrap: wrap;
+            padding: 0 20px;
+        }
+
+        .filtro-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+            width: 90px;
+        }
+
+        .filtro-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .filtro-item.active {
+            transform: translateY(-5px);
+        }
+
+        .filtro-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            overflow: hidden;
+            border: 3px solid #333;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .filtro-item.active .filtro-circle {
+            border: 3px solid #ff6600;
+            box-shadow: 0 0 20px rgba(255, 102, 0, 0.6);
+        }
+
+        .filtro-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .filtro-nome {
+            font-weight: 600;
+            color: #ccc;
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background-color: rgba(51, 51, 51, 0.8);
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+        }
+
+        .filtro-item.active .filtro-nome {
+            color: #ff6600;
+            font-weight: 700;
+            background-color: rgba(255, 102, 0, 0.15);
+        }
+
+        /* CONTAINER DE PRODUTOS EM CARROSSEL NETFLIX */
+        .produtos-carrossel-container {
+            padding: 0 5%;
+            margin-bottom: 50px;
+        }
+
+        .categoria-titulo {
+            color: #fff;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            padding-left: 10px;
+            font-weight: 600;
+        }
+
+        .produtos-carrossel {
+            display: flex;
+            gap: 25px;
+            overflow-x: auto;
+            padding: 20px 10px;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Esconde a barra de rolagem mas mantém funcionalidade */
+        .produtos-carrossel::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .produtos-carrossel::-webkit-scrollbar-track {
+            background: rgba(51, 51, 51, 0.3);
+            border-radius: 10px;
+        }
+
+        .produtos-carrossel::-webkit-scrollbar-thumb {
+            background: #ff6600;
+            border-radius: 10px;
+        }
+
+        /* CARD DE PRODUTO - FORMA MAIS QUADRADA COM BLUR */
+        .produto-card {
+            background-color: rgba(17, 17, 17, 0.9);
+            border: 1.5px solid rgba(255, 102, 0, 0.4);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            position: relative;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            min-width: 280px;
+            flex-shrink: 0;
+        }
+
+        .produto-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(255, 102, 0, 0.3);
+            border-color: rgba(255, 133, 51, 0.6);
+            backdrop-filter: blur(12px);
+        }
+
+        /* Efeito de brilho na borda com blur */
+        .produto-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
             right: 0;
-            animation: subir_e_sumir 0.8s ease-out forwards;
-            pointer-events: none;
-            z-index: 10;
+            bottom: 0;
+            background: linear-gradient(45deg,
+                rgba(255, 102, 0, 0.1),
+                rgba(255, 133, 51, 0.1),
+                rgba(255, 102, 0, 0.1));
+            border-radius: 12px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s;
+            backdrop-filter: blur(5px);
         }
 
-        /* Animação para a mensagem subir e desaparecer */
-        @keyframes subir_e_sumir {
-            0% { transform: translateY(0); opacity: 1; }
-            100% { transform: translateY(-20px); opacity: 0; }
+        .produto-card:hover::before {
+            opacity: 1;
         }
 
-        /* Efeito de brilho/pulso no botão ao clicar */
+        .icon-area {
+            background-color: rgba(26, 26, 26, 0.8);
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid rgba(51, 51, 51, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .icon-area img {
+            width: 140px;
+            height: 140px;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+        }
+
+        .info-area {
+            padding: 20px;
+        }
+
+        .badge {
+            background: rgba(255, 102, 0, 0.15);
+            color: #ff8533;
+            font-size: 10px;
+            padding: 5px 12px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            display: inline-block;
+            border: 1px solid rgba(255, 102, 0, 0.4);
+            font-weight: bold;
+            backdrop-filter: blur(5px);
+        }
+
+        .info-area h3 {
+            margin: 8px 0;
+            font-size: 1.3rem;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .info-area p {
+            color: #bbb;
+            font-size: 0.95rem;
+            min-height: 40px;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .preco-acao {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            position: relative;
+        }
+
+        .preco {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: #ff6600;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            letter-spacing: 0.5px;
+        }
+
+        .btn-mais {
+            background: rgba(255, 102, 0, 0.9);
+            color: #000;
+            border-radius: 50%;
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 10px rgba(255, 102, 0, 0.3);
+        }
+
+        .btn-mais:hover {
+            background: rgba(255, 133, 51, 0.95);
+            transform: scale(1.15);
+            box-shadow: 0 6px 15px rgba(255, 102, 0, 0.5);
+        }
+
         .btn-mais.clicado {
             animation: brilho_click 0.3s ease-in-out;
         }
 
         @keyframes brilho_click {
-            0% { box-shadow: 0 0 0px #ffc107; transform: scale(1); }
-            50% { box-shadow: 0 0 15px #ffc107; transform: scale(1.2); }
-            100% { box-shadow: 0 0 0px #ffc107; transform: scale(1); }
+            0% { box-shadow: 0 0 0px rgba(255, 102, 0, 0.8); transform: scale(1); }
+            50% { box-shadow: 0 0 20px rgba(255, 102, 0, 0.8); transform: scale(1.3); }
+            100% { box-shadow: 0 0 0px rgba(255, 102, 0, 0.8); transform: scale(1); }
         }
 
-        /* Necessário para alinhar o aviso corretamente */
-        .preco-acao {
-            position: relative;
+        /* Estilo da mensagem flutuante "Adicionado!" */
+        .aviso-adicionado {
+            position: absolute;
+            background: rgba(255, 102, 0, 0.9);
+            color: #000;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            bottom: 50px;
+            right: 0;
+            animation: subir_e_sumir 0.8s ease-out forwards;
+            pointer-events: none;
+            z-index: 10;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 133, 51, 0.5);
         }
-        </style>
-    </head>
-    <body>
 
-    <header class="header-cliente">
-        <a href="/" class="logo-express">EXPRESS</a>
-        <nav class="nav-links">
-            <a href="/">🛍️ Catálogo</a>
-            <a href="{% url 'login' %}" class="btn-parceiro">🤝 Sou Parceiro</a>
-        </nav>
-    </header>
+        /* Animação para a mensagem subir e desaparecer */
+        @keyframes subir_e_sumir {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-25px); opacity: 0; }
+        }
 
-    <div class="hero-title">
-        <h1>CONVENIÊNCIA EXPRESS</h1>
-    </div>
+        /* SEÇÃO FINALIZAR PEDIDO */
+        .finalizar {
+            max-width: 600px;
+            margin: 80px auto;
+            padding: 40px;
+            background: rgba(17, 17, 17, 0.9);
+            border-radius: 15px;
+            border: 1.5px solid rgba(255, 102, 0, 0.4);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
 
-    <div class="filtros">
-    <a href="{% url 'produtos:home' %}"
-       class="btn-filtro {% if not request.GET.categoria %}active{% endif %}">
-       TODOS
-    </a>
+        .finalizar h2 {
+            text-align: center;
+            color: #ff6600;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
 
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #bbb;
+            font-weight: 500;
+        }
+
+        input, textarea {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(51, 51, 51, 0.7);
+            color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: rgba(255, 102, 0, 0.6);
+            box-shadow: 0 0 0 2px rgba(255, 102, 0, 0.2);
+        }
+
+        .finalizar button[type="submit"] {
+            background: rgba(255, 102, 0, 0.9);
+            color: #000;
+            width: 100%;
+            border: none;
+            padding: 18px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+            letter-spacing: 1px;
+            backdrop-filter: blur(5px);
+        }
+
+        .finalizar button[type="submit"]:hover {
+            background: rgba(255, 133, 51, 0.95);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 102, 0, 0.4);
+        }
+
+        /* RESPONSIVIDADE */
+        @media (max-width: 768px) {
+            .header-cliente {
+                padding: 8px 4%;
+            }
+
+            .logo-express {
+                font-size: 1.3rem;
+            }
+
+            .hero-title {
+                padding: 60px 15px;
+            }
+
+            .hero-title h1 {
+                font-size: 2rem;
+                letter-spacing: 4px;
+            }
+
+            .filtros-container {
+                gap: 20px;
+                margin: 30px 0 40px;
+            }
+
+            .filtro-item {
+                width: 70px;
+            }
+
+            .filtro-circle {
+                width: 65px;
+                height: 65px;
+            }
+
+            .produtos-carrossel-container {
+                padding: 0 15px;
+            }
+
+            .produto-card {
+                min-width: 250px;
+            }
+
+            .finalizar {
+                margin: 50px 15px;
+                padding: 30px 25px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .filtros-container {
+                gap: 15px;
+            }
+
+            .filtro-item {
+                width: 60px;
+            }
+
+            .filtro-circle {
+                width: 55px;
+                height: 55px;
+            }
+
+            .filtro-nome {
+                font-size: 0.75rem;
+            }
+
+            .produto-card {
+                min-width: 220px;
+            }
+
+            .nav-links {
+                gap: 15px;
+            }
+
+            .nav-links a {
+                font-size: 0.8rem;
+            }
+
+            .btn-parceiro {
+                padding: 4px 12px;
+                font-size: 0.75rem;
+            }
+        }
+
+        /* Animação de entrada dos cards */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .produto-card {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* Efeito de gradiente sutil no fundo */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(255, 102, 0, 0.05) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(255, 102, 0, 0.03) 0%, transparent 50%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* ESTILO DOS FILTROS ORIGINAIS DO CÓDIGO 1 (mantido para compatibilidade) */
+        .filtros {
+            display: none; /* Escondendo os filtros antigos */
+        }
+
+        /* Classe para esconder elementos */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+<header class="header-cliente">
+    <a href="/" class="logo-express">EXPRESS</a>
+    <nav class="nav-links">
+        <a href="/">🛍️ Catálogo</a>
+        <a href="{% url 'login' %}" class="btn-parceiro">🤝 Sou Parceiro</a>
+    </nav>
+</header>
+
+<div class="hero-title">
+    <h1>CONVENIÊNCIA EXPRESS</h1>
+</div>
+
+<!-- FILTROS ORIGINAIS (escondidos via CSS) -->
+<div class="filtros">
     {% for cat in categorias %}
         <a href="{% url 'produtos:home' %}?categoria={{ cat.id }}"
            class="btn-filtro {% if request.GET.categoria == cat.id|stringformat:'i' %}active{% endif %}">
@@ -190,108 +582,258 @@
     {% endfor %}
 </div>
 
-    <div class="container-produtos">
-        {% for produto in produtos %}
-        <div class="produto-card">
-            <div class="icon-area">
-                {% if produto.imagem %}
-                    <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}">
-                {% endif %}
-            </div>
-            <div class="info-area">
-                <span class="badge">{{ produto.categoria.nome|upper }}</span>
-                <h3>{{ produto.nome }}</h3>
-                <p>{{ produto.descricao }}</p>
-                <div class="preco-acao">
-                    <span class="preco">R$ {{ produto.preco }}</span>
-                    <button type="button"
-                            onclick="atualizarCarrinho('{% url 'produtos:carrinho_ajax' produto.id 'adicionar' %}')"
-                            class="btn-mais">
-                        +
-                    </button>
-</div>
-            </div>
+<!-- NOVOS FILTROS CIRCULARES - SEM "TODOS" -->
+<div class="filtros-container">
+    {% for cat in categorias %}
+    <div class="filtro-item {% if cat.nome|lower == 'bebidas' %}active{% endif %}"
+         data-categoria="{{ cat.nome|lower }}">
+        <div class="filtro-circle">
+            {% if cat.nome|lower == "bebidas" %}
+            <img src="https://images.unsplash.com/photo-1629203851122-3726ecdf080e?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="{{ cat.nome }}">
+            {% elif cat.nome|lower == "doces" %}
+            <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="{{ cat.nome }}">
+            {% elif cat.nome|lower == "salgados" %}
+            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="{{ cat.nome }}">
+            {% else %}
+            <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="{{ cat.nome }}">
+            {% endif %}
         </div>
+        <span class="filtro-nome">{{ cat.nome|upper }}</span>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- CONTAINER PARA PRODUTOS EM CARROSSEL NETFLIX -->
+<div id="container-categoria-produtos" class="produtos-carrossel-container">
+    <h2 class="categoria-titulo" id="categoria-titulo">BEBIDAS</h2>
+    <div class="produtos-carrossel" id="produtos-carrossel">
+        <!-- Os produtos serão injetados aqui via JavaScript -->
+        {% for produto in produtos %}
+            {% if produto.categoria.nome|lower == 'bebidas' %}
+            <div class="produto-card" data-categoria="{{ produto.categoria.nome|lower }}">
+                <div class="icon-area">
+                    {% if produto.imagem %}
+                        <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}">
+                    {% endif %}
+                </div>
+                <div class="info-area">
+                    <span class="badge">{{ produto.categoria.nome|upper }}</span>
+                    <h3>{{ produto.nome }}</h3>
+                    <p>{{ produto.descricao }}</p>
+                    <div class="preco-acao">
+                        <span class="preco">R$ {{ produto.preco }}</span>
+                        <button type="button"
+                                onclick="atualizarCarrinho('{% url 'produtos:carrinho_ajax' produto.id 'adicionar' %}')"
+                                class="btn-mais">
+                            +
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
         {% endfor %}
     </div>
+</div>
 
-    <section class="finalizar" id="checkout">
-        <h2 style="text-align: center; color: #ffc107;">🛒 SEU PEDIDO</h2>
-        <form action="{% url 'produtos:finalizar_pedido' %}" method="POST">
-            {% csrf_token %}
-            <div class="input-group">
-                <label>Nome Completo *</label>
-                <input type="text" name="nome_completo" required>
+<!-- CONTAINER OCULTO COM TODOS OS PRODUTOS PARA O JAVASCRIPT FILTRAR -->
+<div id="todos-produtos-container" style="display: none;">
+    {% for produto in produtos %}
+    <div class="produto-template" data-categoria="{{ produto.categoria.nome|lower }}">
+        <div class="icon-area">
+            {% if produto.imagem %}
+                <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}">
+            {% endif %}
+        </div>
+        <div class="info-area">
+            <span class="badge">{{ produto.categoria.nome|upper }}</span>
+            <h3>{{ produto.nome }}</h3>
+            <p>{{ produto.descricao }}</p>
+            <div class="preco-acao">
+                <span class="preco">R$ {{ produto.preco }}</span>
+                <button type="button"
+                        onclick="atualizarCarrinho('{% url 'produtos:carrinho_ajax' produto.id 'adicionar' %}')"
+                        class="btn-mais">
+                    +
+                </button>
             </div>
-            <div class="input-group">
-                <label>Telefone (WhatsApp) *</label>
-                <input type="text" name="telefone" placeholder="(00) 00000-0000" required>
-            </div>
-            <div class="input-group">
-                <label>Endereço de Entrega *</label>
-                <textarea name="endereco" rows="3" placeholder="Rua, número, bairro e referência" required></textarea>
-            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
 
-            <div id="resumo-carrinho-container" style="background: #000; padding: 20px; border-radius: 12px; border: 1px dashed #333; margin-bottom: 25px;">
-                {% include 'produtos/includes/resumo_itens.html' %}
-            </div>
+<section class="finalizar" id="checkout">
+    <h2 style="text-align: center; color: #ffc107;">🛒 SEU PEDIDO</h2>
+    <form action="{% url 'produtos:finalizar_pedido' %}" method="POST">
+        {% csrf_token %}
+        <div class="input-group">
+            <label>Nome Completo *</label>
+            <input type="text" name="nome_completo" required>
+        </div>
+        <div class="input-group">
+            <label>Telefone (WhatsApp) *</label>
+            <input type="text" name="telefone" placeholder="(00) 00000-0000" required>
+        </div>
+        <div class="input-group">
+            <label>Endereço de Entrega *</label>
+            <textarea name="endereco" rows="3" placeholder="Rua, número, bairro e referência" required></textarea>
+        </div>
 
-            <button type="submit" style="background: #ffc107; color: #000; width: 100%; border: none; padding: 18px; border-radius: 10px; font-weight: bold; font-size: 1.1rem; cursor: pointer;">
-                CONFIRMAR PEDIDO NO WHATSAPP
-            </button>
-        </form>
-    </section>
+        <div id="resumo-carrinho-container" style="background: rgba(0, 0, 0, 0.8); padding: 20px; border-radius: 10px; border: 1px dashed rgba(255, 102, 0, 0.3); margin-bottom: 25px; backdrop-filter: blur(5px);">
+            {% include 'produtos/includes/resumo_itens.html' %}
+        </div>
+        <button type="submit" style="background: rgba(255, 102, 0, 0.9); color: #000; width: 100%; border: none; padding: 18px; border-radius: 8px; font-weight: 700; font-size: 1.1rem; cursor: pointer; letter-spacing: 1px; backdrop-filter: blur(5px);">
+            CONFIRMAR PEDIDO NO WHATSAPP
+        </button>
+    </form>
+</section>
 
-    <script>
-    // 1. Filtros de categoria (Ajustado para funcionar com seus links de categoria)
-    document.querySelectorAll('.btn-filtro').forEach(button => {
-        button.addEventListener('click', function() {
-            // Remove 'active' de todos e coloca no clicado
-            document.querySelectorAll('.btn-filtro').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
+<script>
+// Array para armazenar todos os produtos
+let todosProdutosData = [];
+
+// Coletar todos os produtos do container oculto
+document.addEventListener('DOMContentLoaded', function() {
+    const produtosTemplates = document.querySelectorAll('#todos-produtos-container .produto-template');
+
+    produtosTemplates.forEach(template => {
+        const produtoHTML = template.outerHTML;
+        const categoria = template.dataset.categoria;
+
+        todosProdutosData.push({
+            html: produtoHTML,
+            categoria: categoria
         });
     });
 
-    // 2. Função ÚNICA e OFICIAL para o Carrinho
-    function atualizarCarrinho(urlDoDjango) {
-        // Pega o botão que foi clicado para fazer a animação
-        const botaoClicado = event ? event.currentTarget : null;
-
-        fetch(urlDoDjango, {
-            method: 'GET',
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        })
-        .then(response => {
-            if (!response.ok) throw new Error('Erro na rede');
-            return response.json();
-        })
-        .then(data => {
-            if (data.sucesso) {
-                // ATUALIZA A LISTA: Injeta o HTML novo na div do carrinho
-                const container = document.getElementById('resumo-carrinho-container');
-                if (container) {
-                    container.innerHTML = data.html;
-                }
-
-                // ATUALIZA O TOTAL: Procura a div de total que criamos
-                const totalDisplay = document.getElementById('total-carrinho-display');
-                if (totalDisplay) {
-                    totalDisplay.innerText = `TOTAL: ${data.total}`;
-                }
-
-                // FEEDBACK VISUAL: Animação de brilho no botão +
-                if (botaoClicado) {
-                    botaoClicado.classList.add('clicado');
-                    setTimeout(() => botaoClicado.classList.remove('clicado'), 300);
-                }
-            }
-        })
-        .catch(error => {
-            console.error('Erro ao atualizar o carrinho:', error);
-            alert('Erro ao adicionar produto. Tente novamente.');
+    // Inicializar com a categoria BEBIDAS
+    const filtroBebidas = document.querySelector('.filtro-item[data-categoria="bebidas"]');
+    if (filtroBebidas) {
+        // Remove 'active' de todos os filtros
+        document.querySelectorAll('.filtro-item').forEach(item => {
+            item.classList.remove('active');
         });
+
+        // Adiciona 'active' apenas à categoria BEBIDAS
+        filtroBebidas.classList.add('active');
     }
+});
+
+// 1. Sistema de filtros circulares
+document.querySelectorAll('.filtro-item').forEach(filtro => {
+    filtro.addEventListener('click', () => {
+        // Remove a classe 'active' de todos os filtros
+        document.querySelectorAll('.filtro-item').forEach(item => {
+            item.classList.remove('active');
+        });
+
+        // Adiciona a classe 'active' ao filtro clicado
+        filtro.classList.add('active');
+
+        // Obtém a categoria selecionada
+        const categoriaSelecionada = filtro.dataset.categoria;
+        const categoriaNome = filtro.querySelector('.filtro-nome').textContent;
+
+        // Mostra produtos da categoria selecionada no carrossel
+        mostrarProdutosCategoria(categoriaSelecionada, categoriaNome);
+    });
+});
+
+function mostrarProdutosCategoria(categoria, categoriaNome) {
+    // Atualiza o título da categoria
+    document.getElementById('categoria-titulo').textContent = categoriaNome;
+
+    const carrossel = document.getElementById('produtos-carrossel');
+
+    // Limpa o carrossel
+    carrossel.innerHTML = '';
+
+    // Filtrar produtos pela categoria selecionada
+    const produtosFiltrados = todosProdutosData.filter(produto =>
+        produto.categoria === categoria
+    );
+
+    // Adicionar produtos filtrados ao carrossel
+    produtosFiltrados.forEach(produtoData => {
+        // Converter string HTML em elemento DOM
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = produtoData.html;
+        const produtoElement = tempDiv.firstChild;
+
+        // Remover a classe produto-template e adicionar produto-card
+        produtoElement.classList.remove('produto-template');
+        produtoElement.classList.add('produto-card');
+
+        // Adicionar ao carrossel
+        carrossel.appendChild(produtoElement);
+    });
+
+    // Se não houver produtos, mostra mensagem
+    if (produtosFiltrados.length === 0) {
+        carrossel.innerHTML = `
+            <div style="min-width: 100%; text-align: center; padding: 40px; color: #888;">
+                <h3 style="color: #ff8533;">Nenhum produto nesta categoria</h3>
+                <p>Volte em breve para ver nossas novidades!</p>
+            </div>
+        `;
+    }
+}
+
+// 2. Função ÚNICA e OFICIAL para o Carrinho (mantida do Código 1)
+function atualizarCarrinho(urlDoDjango) {
+    // Pega o botão que foi clicado para fazer a animação
+    const botaoClicado = event ? event.currentTarget : null;
+
+    fetch(urlDoDjango, {
+        method: 'GET',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Erro na rede');
+        return response.json();
+    })
+    .then(data => {
+        if (data.sucesso) {
+            // ATUALIZA A LISTA: Injeta o HTML novo na div do carrinho
+            const container = document.getElementById('resumo-carrinho-container');
+            if (container) {
+                container.innerHTML = data.html;
+            }
+
+            // ATUALIZA O TOTAL: Procura a div de total que criamos
+            const totalDisplay = document.getElementById('total-carrinho-display');
+            if (totalDisplay) {
+                totalDisplay.innerText = `TOTAL: ${data.total}`;
+            }
+
+            // FEEDBACK VISUAL: Animação de brilho no botão +
+            if (botaoClicado) {
+                botaoClicado.classList.add('clicado');
+                setTimeout(() => botaoClicado.classList.remove('clicado'), 300);
+
+                // Cria e exibe o aviso flutuante "Adicionado!"
+                const aviso = document.createElement('div');
+                aviso.className = 'aviso-adicionado';
+                aviso.innerText = 'Adicionado!';
+
+                // Insere o aviso no container do produto
+                const precoAcao = botaoClicado.parentElement;
+                precoAcao.appendChild(aviso);
+
+                // Remove o aviso do HTML após a animação (800ms)
+                setTimeout(() => {
+                    if (aviso.parentNode) {
+                        aviso.parentNode.removeChild(aviso);
+                    }
+                }, 800);
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Erro ao atualizar o carrinho:', error);
+        alert('Erro ao adicionar produto. Tente novamente.');
+    });
+}
 </script>
 
-    </body>
-    </html>
+</body>
+</html>

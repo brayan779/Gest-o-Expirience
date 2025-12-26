@@ -215,15 +215,28 @@ def gerenciar_carrinho_ajax(request, produto_id, acao):
             else:
                 del carrinho[id_str]
 
-    # SALVA NA SESSÃO (Essencial!)
+    # SALVA NA SESSÃO
     request.session['carrinho'] = carrinho
     request.session.modified = True
 
-    # CALCULA TOTAIS E RENDERIZA O HTML
-    itens_detalhados = [{'nome': d['nome'], 'quantidade': d['quantidade'], 'subtotal': float(d['preco']) * d['quantidade']} for id_i, d in carrinho.items()]
-    total_carrinho = sum(item['subtotal'] for item in itens_detalhados)
+    # --- PARTE QUE PRECISA DE AJUSTE: ---
+    itens_detalhados = []
+    total_carrinho = 0
 
-    html_lista = render_to_string('produtos/includes/resumo_itens.html', {'itens_carrinho': itens_detalhados})
+    for id_chave, d in carrinho.items():
+        subtotal = float(d['preco']) * d['quantidade']
+        total_carrinho += subtotal
+        itens_detalhados.append({
+            'produto_id': id_chave,  # << ESSA LINHA É A CHAVE PRO BOTÃO FUNCIONAR
+            'nome': d['nome'],
+            'quantidade': d['quantidade'],
+            'subtotal': subtotal
+        })
+
+    # Renderiza o HTML enviando a lista com os IDs
+    html_lista = render_to_string('produtos/includes/resumo_itens.html', {
+        'itens_carrinho': itens_detalhados
+    })
 
     return JsonResponse({
         'sucesso': True,

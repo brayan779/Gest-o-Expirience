@@ -1,9 +1,16 @@
 {% for item in itens_carrinho %}
-<div style="display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 5px;">
-
-    <span>{{ item.quantidade }}x {{ item.nome }}</span>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 5px;">
+    <div class="preco-acao" style="display: flex; align-items: center; gap: 10px;">
+        <button type="button"
+                onclick="atualizarCarrinho('{% url 'produtos:carrinho_ajax' item.produto_id 'remover' %}')"
+                class="btn-mais"
+                style="background: #ff5722; color: #fff; border: none; border-radius: 6px; width: 25px; height: 25px; cursor: pointer; font-weight: bold;">
+            -
+        </button>
+        <span>{{ item.quantidade }}x {{ item.nome }}</span>
+    </div>
     <span>R$ {{ item.subtotal|floatformat:2 }}</span>
 </div>
 {% empty %}
-<p style="color: #666; text-align: center;">O carrinho está vazio.</p>
+<p style="color: #666; text-align: center;">Carrinho vazio</p>
 {% endfor %}
