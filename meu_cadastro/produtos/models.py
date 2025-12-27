@@ -4,24 +4,60 @@ from django.utils import timezone
 
 class Categoria(models.Model):
     nome = models.CharField(max_length=50)
-
-    # Ex: 'Bebidas', 'Salgadinhos', 'Doces'
+    pai = models.ForeignKey(
+        'self',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='subcategorias',
+        verbose_name="Categoria Pai"
+    )
+    ordem = models.IntegerField(default=0, help_text="Ordem de exibição")
 
     def __str__(self):
+        if self.pai:
+            return f"{self.pai.nome} > {self.nome}"
         return self.nome
+
+    @property
+    def is_subcategoria(self):
+        return self.pai is not None
+
+    @property
+    def is_categoria_pai(self):
+        return self.pai is None
+
+    class Meta:
+        verbose_name = "Categoria"
+        verbose_name_plural = "Categorias"
+        ordering = ['ordem', 'nome']
 
 
 class Produto(models.Model):
-    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, related_name='produtos')
+    categoria = models.ForeignKey(
+        Categoria,
+        on_delete=models.CASCADE,
+        related_name='produtos'
+    )
     nome = models.CharField(max_length=100)
     descricao = models.TextField(blank=True, help_text="Ex: Refrigerante 2L")
     preco = models.DecimalField(max_digits=7, decimal_places=2)
     imagem = models.ImageField(upload_to='produtos/', null=True, blank=True)
     disponivel = models.BooleanField(default=True)
+    ordem = models.IntegerField(default=0, help_text="Ordem de exibição")
 
     def __str__(self):
         return self.nome
 
+    @property
+    def categoria_pai(self):
+        return self.categoria.pai if self.categoria.pai else self.categoria
+
+    class Meta:
+        ordering = ['ordem', 'nome']
+
+
+# ... (mantenha Pedido e ItemPedido como estão) ...
 
 class Pedido(models.Model):
     # Campos que aparecem no seu formulário "FINALIZAR PEDIDO" da imagem

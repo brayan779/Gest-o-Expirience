@@ -1,35 +1,71 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Produto, Categoria, Pedido, ItemPedido
-from django.db.models import Sum, Count
+from django.db.models import Sum, Count, Q
 from django.utils import timezone
 from datetime import timedelta
 from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 
+
 def home_conveniencia(request):
-    # 1. Busca todas as categorias e produtos para exibir na Landing Page
-    categorias = Categoria.objects.all()
-    categoria_id = request.GET.get('categoria')
+    # 1. Busca categorias pai (sem pai) e produtos disponíveis
+    categorias_pai = Categoria.objects.filter(pai__isnull=True).order_by('ordem', 'nome')
+
+    # 2. Busca parâmetros da URL
+    categoria_pai_id = request.GET.get('categoria_pai')
+    subcategoria_id = request.GET.get('subcategoria')
+
+    # 3. Inicializa variáveis
     produtos = Produto.objects.filter(disponivel=True)
+    categoria_pai_selecionada = None
+    subcategoria_selecionada = None
 
-    if categoria_id:
-        # Filtra os produtos pela categoria selecionada
-        produtos = Produto.objects.filter(disponivel=True, categoria_id=categoria_id)
-    else:
-        # Se não tiver filtro, mostra tudo
-        produtos = Produto.objects.filter(disponivel=True)
+    # 4. Filtra por categoria pai (se especificada)
+    if categoria_pai_id:
+        try:
+            categoria_pai_selecionada = Categoria.objects.get(id=categoria_pai_id, pai__isnull=True)
 
-    # 2. Pega o carrinho da sessão para mostrar o "Resumo do Pedido" na mesma tela
+            # Se também tem subcategoria específica
+            if subcategoria_id:
+                subcategoria_selecionada = Categoria.objects.get(
+                    id=subcategoria_id,
+                    pai=categoria_pai_selecionada
+                )
+                produtos = produtos.filter(categoria=subcategoria_selecionada)
+            else:
+                # Filtra produtos das subcategorias desta categoria pai
+                subcategorias_ids = categoria_pai_selecionada.subcategorias.values_list('id', flat=True)
+                produtos = produtos.filter(categoria_id__in=subcategorias_ids)
+        except Categoria.DoesNotExist:
+            pass
+
+    # 5. Busca subcategorias da categoria pai selecionada (se houver)
+    subcategorias = []
+    if categoria_pai_selecionada:
+        subcategorias = categoria_pai_selecionada.subcategorias.all().order_by('ordem', 'nome')
+    elif categorias_pai.exists():
+        # Por padrão, pega a primeira categoria pai
+        primeira_categoria = categorias_pai.first()
+        subcategorias = primeira_categoria.subcategorias.all().order_by('ordem', 'nome')
+        subcategorias_ids = subcategorias.values_list('id', flat=True)
+        produtos = produtos.filter(categoria_id__in=subcategorias_ids)
+
+    # 6. Organiza produtos por subcategoria para o template
+    produtos_por_subcategoria = {}
+    for subcat in subcategorias:
+        produtos_subcat = produtos.filter(categoria=subcat).order_by('ordem', 'nome')
+        if produtos_subcat.exists():
+            produtos_por_subcategoria[subcat] = produtos_subcat
+
+    # 7. Carrinho (mantido igual)
     carrinho = request.session.get('carrinho', {})
     total_carrinho = 0
     itens_detalhados = []
 
     for item_id, dados in carrinho.items():
-        # Verificação de segurança para evitar erro de dicionário/inteiro
         qtd = dados.get('quantidade', 0)
         preco = float(dados.get('preco', 0))
-
         subtotal = preco * qtd
         total_carrinho += subtotal
 
@@ -42,13 +78,22 @@ def home_conveniencia(request):
         })
 
     contexto = {
-        'categorias': categorias,
-        'produtos': produtos,
+        'categorias_pai': categorias_pai,
+        'categoria_pai_selecionada': categoria_pai_selecionada,
+        'subcategoria_selecionada': subcategoria_selecionada,
+        'subcategorias': subcategorias,
+        'produtos_por_subcategoria': produtos_por_subcategoria,
+        'produtos': produtos,  # Mantém para compatibilidade
         'itens_carrinho': itens_detalhados,
         'total_carrinho': total_carrinho,
     }
-    return render(request, 'produtos/cardapio.html', contexto)
 
+    print("DEBUG VIEW:")  # Para ver no terminal
+    print(f"- Categorias Pai: {categorias_pai.count()}")
+    print(f"- Subcategorias: {len(subcategorias)}")
+    print(f"- Produtos por Subcat: {len(produtos_por_subcategoria)}")
+
+    return render(request, 'produtos/cardapio.html', contexto)
 
 def adicionar_carrinho(request, produto_id):
     carrinho = request.session.get('carrinho', {})

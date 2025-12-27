@@ -107,20 +107,21 @@
             padding: 0 20px;
         }
 
-        .filtro-item {
+        .filtro-link {
             display: flex;
             flex-direction: column;
             align-items: center;
-            cursor: pointer;
-            transition: transform 0.3s;
+            text-decoration: none;
+            color: inherit;
             width: 90px;
+            transition: transform 0.3s;
         }
 
-        .filtro-item:hover {
+        .filtro-link:hover {
             transform: translateY(-5px);
         }
 
-        .filtro-item.active {
+        .filtro-link.active {
             transform: translateY(-5px);
         }
 
@@ -138,7 +139,7 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
         }
 
-        .filtro-item.active .filtro-circle {
+        .filtro-link.active .filtro-circle {
             border: 3px solid #ff6600;
             box-shadow: 0 0 20px rgba(255, 102, 0, 0.6);
         }
@@ -161,7 +162,7 @@
             backdrop-filter: blur(5px);
         }
 
-        .filtro-item.active .filtro-nome {
+        .filtro-link.active .filtro-nome {
             color: #ff6600;
             font-weight: 700;
             background-color: rgba(255, 102, 0, 0.15);
@@ -556,6 +557,70 @@
         .hidden {
             display: none !important;
         }
+
+        /* NOVOS ESTILOS PARA SUBCATEGORIAS */
+        .subcategoria-header {
+            display: flex;
+            align-items: center;
+            margin: 40px 5% 25px 5%;
+            padding-left: 15px;
+        }
+
+        .subcategoria-bar {
+            width: 5px;
+            height: 30px;
+            background: #ff6600;
+            margin-right: 15px;
+            border-radius: 3px;
+        }
+
+        .subcategoria-title {
+            color: #fff;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .no-products {
+            text-align: center;
+            padding: 50px 20px;
+            color: #888;
+        }
+
+        .no-products h3 {
+            color: #ff8533;
+            margin-bottom: 10px;
+        }
+
+        /* LINKS NOS FILTROS CIRCULARES */
+        .filtro-link {
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 90px;
+        }
+
+        .filtro-link:hover .filtro-circle {
+            transform: scale(1.05);
+            border-color: rgba(255, 102, 0, 0.5);
+        }
+
+        .filtro-link:hover .filtro-nome {
+            color: #ff8533;
+        }
+
+        .filtro-link.active .filtro-circle {
+            border: 3px solid #ff6600;
+            box-shadow: 0 0 20px rgba(255, 102, 0, 0.6);
+        }
+
+        .filtro-link.active .filtro-nome {
+            color: #ff6600;
+            font-weight: 700;
+            background-color: rgba(255, 102, 0, 0.15);
+        }
     </style>
 </head>
 <body>
@@ -572,93 +637,105 @@
     <h1>CONVENIÊNCIA EXPRESS</h1>
 </div>
 
-<!-- FILTROS ORIGINAIS (escondidos via CSS) -->
-<div class="filtros">
-    {% for cat in categorias %}
-        <a href="{% url 'produtos:home' %}?categoria={{ cat.id }}"
-           class="btn-filtro {% if request.GET.categoria == cat.id|stringformat:'i' %}active{% endif %}">
-           {{ cat.nome|upper }}
-        </a>
-    {% endfor %}
-</div>
-
-<!-- NOVOS FILTROS CIRCULARES - SEM "TODOS" -->
+<!-- FILTROS CIRCULARES CLICÁVEIS -->
 <div class="filtros-container">
-    {% for cat in categorias %}
-    <div class="filtro-item {% if cat.nome|lower == 'bebidas' %}active{% endif %}"
-         data-categoria="{{ cat.nome|lower }}">
+    {% for cat in categorias_pai %}
+    <a href="{% url 'produtos:home' %}?categoria_pai={{ cat.id }}"
+       class="filtro-link {% if categoria_pai_selecionada.id == cat.id or not categoria_pai_selecionada and forloop.first %}active{% endif %}">
         <div class="filtro-circle">
             {% if cat.nome|lower == "bebidas" %}
             <img src="https://images.unsplash.com/photo-1629203851122-3726ecdf080e?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="{{ cat.nome }}">
             {% elif cat.nome|lower == "doces" %}
             <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="{{ cat.nome }}">
-            {% elif cat.nome|lower == "salgados" %}
+            {% elif cat.nome|lower == "salgados" or cat.nome|lower == "salgadinhos" %}
             <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="{{ cat.nome }}">
+            {% elif cat.nome|lower == "lanches" %}
+            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="{{ cat.nome }}">
+            {% elif cat.nome|lower == "higiene" %}
+            <img src="https://images.unsplash.com/photo-1583947581924-860bda6a26df?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="{{ cat.nome }}">
+            {% elif cat.nome|lower == "cuidados pessoais" or cat.nome|lower == "pessoais" %}
+            <img src="https://images.unsplash.com/photo-1556228578-9c360e2d0b4a?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="{{ cat.nome }}">
             {% else %}
             <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="{{ cat.nome }}">
             {% endif %}
         </div>
         <span class="filtro-nome">{{ cat.nome|upper }}</span>
-    </div>
+    </a>
     {% endfor %}
 </div>
 
-<!-- CONTAINER PARA PRODUTOS EM CARROSSEL NETFLIX -->
-<div id="container-categoria-produtos" class="produtos-carrossel-container">
-    <h2 class="categoria-titulo" id="categoria-titulo">BEBIDAS</h2>
-    <div class="produtos-carrossel" id="produtos-carrossel">
-        <!-- Os produtos serão injetados aqui via JavaScript -->
-        {% for produto in produtos %}
-            {% if produto.categoria.nome|lower == 'bebidas' %}
-            <div class="produto-card" data-categoria="{{ produto.categoria.nome|lower }}">
-                <div class="icon-area">
-                    {% if produto.imagem %}
-                        <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}">
-                    {% endif %}
-                </div>
-                <div class="info-area">
-                    <span class="badge">{{ produto.categoria.nome|upper }}</span>
-                    <h3>{{ produto.nome }}</h3>
-                    <p>{{ produto.descricao }}</p>
-                    <div class="preco-acao">
-                        <span class="preco">R$ {{ produto.preco }}</span>
-                        <button type="button"
-                                onclick="atualizarCarrinho('{% url 'produtos:carrinho_ajax' produto.id 'adicionar' %}')"
-                                class="btn-mais">
-                            +
-                        </button>
+<!-- SUBTÍTULO DA CATEGORIA SELECIONADA -->
+{% if categoria_pai_selecionada or categorias_pai.first %}
+<div style="text-align: center; margin: 20px 0 10px 0;">
+    <h2 style="color: #ff6600; font-size: 2.2rem; font-weight: 700; letter-spacing: 2px;">
+        {% if categoria_pai_selecionada %}
+            {{ categoria_pai_selecionada.nome|upper }}
+        {% else %}
+            {{ categorias_pai.first.nome|upper }}
+        {% endif %}
+    </h2>
+</div>
+{% endif %}
+
+<!-- CONTAINER DE PRODUTOS ORGANIZADOS POR SUBCATEGORIA -->
+<div id="container-produtos-subcategorias" style="padding: 0 5%; margin-bottom: 50px;">
+
+    {% if produtos_por_subcategoria %}
+        <!-- MOSTRA TODAS AS SUBCATEGORIAS UMA ABAIXO DA OUTRA -->
+        {% for subcat, produtos_list in produtos_por_subcategoria.items %}
+        <div class="produtos-subcategoria-section">
+
+            <!-- CABEÇALHO DA SUBCATEGORIA (NÃO CLICÁVEL) -->
+            <div class="subcategoria-header">
+                <div class="subcategoria-bar"></div>
+                <h3 class="subcategoria-title">{{ subcat.nome|upper }}</h3>
+            </div>
+
+            <!-- PRODUTOS DESTA SUBCATEGORIA EM CARROSSEL -->
+            {% if produtos_list %}
+            <div class="produtos-carrossel">
+                {% for produto in produtos_list %}
+                <div class="produto-card">
+                    <div class="icon-area">
+                        {% if produto.imagem %}
+                            <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}">
+                        {% else %}
+                            <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #888; font-size: 3rem;">
+                                📦
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="info-area">
+                        <span class="badge">{{ subcat.nome|upper }}</span>
+                        <h3>{{ produto.nome }}</h3>
+                        <p>{{ produto.descricao|truncatechars:60 }}</p>
+                        <div class="preco-acao">
+                            <span class="preco">R$ {{ produto.preco }}</span>
+                            <button type="button"
+                                    onclick="atualizarCarrinho('{% url 'produtos:carrinho_ajax' produto.id 'adicionar' %}')"
+                                    class="btn-mais">
+                                +
+                            </button>
+                        </div>
                     </div>
                 </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="no-products">
+                <p>Nenhum produto disponível nesta subcategoria</p>
             </div>
             {% endif %}
+        </div>
         {% endfor %}
-    </div>
-</div>
 
-<!-- CONTAINER OCULTO COM TODOS OS PRODUTOS PARA O JAVASCRIPT FILTRAR -->
-<div id="todos-produtos-container" style="display: none;">
-    {% for produto in produtos %}
-    <div class="produto-template" data-categoria="{{ produto.categoria.nome|lower }}">
-        <div class="icon-area">
-            {% if produto.imagem %}
-                <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}">
-            {% endif %}
+    {% else %}
+        <!-- SE NÃO HOUVER PRODUTOS -->
+        <div class="no-products">
+            <h3>Selecione uma categoria</h3>
+            <p>Clique em uma das categorias acima para ver os produtos</p>
         </div>
-        <div class="info-area">
-            <span class="badge">{{ produto.categoria.nome|upper }}</span>
-            <h3>{{ produto.nome }}</h3>
-            <p>{{ produto.descricao }}</p>
-            <div class="preco-acao">
-                <span class="preco">R$ {{ produto.preco }}</span>
-                <button type="button"
-                        onclick="atualizarCarrinho('{% url 'produtos:carrinho_ajax' produto.id 'adicionar' %}')"
-                        class="btn-mais">
-                    +
-                </button>
-            </div>
-        </div>
-    </div>
-    {% endfor %}
+    {% endif %}
 </div>
 
 <section class="finalizar" id="checkout">
@@ -688,97 +765,7 @@
 </section>
 
 <script>
-// Array para armazenar todos os produtos
-let todosProdutosData = [];
-
-// Coletar todos os produtos do container oculto
-document.addEventListener('DOMContentLoaded', function() {
-    const produtosTemplates = document.querySelectorAll('#todos-produtos-container .produto-template');
-
-    produtosTemplates.forEach(template => {
-        const produtoHTML = template.outerHTML;
-        const categoria = template.dataset.categoria;
-
-        todosProdutosData.push({
-            html: produtoHTML,
-            categoria: categoria
-        });
-    });
-
-    // Inicializar com a categoria BEBIDAS
-    const filtroBebidas = document.querySelector('.filtro-item[data-categoria="bebidas"]');
-    if (filtroBebidas) {
-        // Remove 'active' de todos os filtros
-        document.querySelectorAll('.filtro-item').forEach(item => {
-            item.classList.remove('active');
-        });
-
-        // Adiciona 'active' apenas à categoria BEBIDAS
-        filtroBebidas.classList.add('active');
-    }
-});
-
-// 1. Sistema de filtros circulares
-document.querySelectorAll('.filtro-item').forEach(filtro => {
-    filtro.addEventListener('click', () => {
-        // Remove a classe 'active' de todos os filtros
-        document.querySelectorAll('.filtro-item').forEach(item => {
-            item.classList.remove('active');
-        });
-
-        // Adiciona a classe 'active' ao filtro clicado
-        filtro.classList.add('active');
-
-        // Obtém a categoria selecionada
-        const categoriaSelecionada = filtro.dataset.categoria;
-        const categoriaNome = filtro.querySelector('.filtro-nome').textContent;
-
-        // Mostra produtos da categoria selecionada no carrossel
-        mostrarProdutosCategoria(categoriaSelecionada, categoriaNome);
-    });
-});
-
-function mostrarProdutosCategoria(categoria, categoriaNome) {
-    // Atualiza o título da categoria
-    document.getElementById('categoria-titulo').textContent = categoriaNome;
-
-    const carrossel = document.getElementById('produtos-carrossel');
-
-    // Limpa o carrossel
-    carrossel.innerHTML = '';
-
-    // Filtrar produtos pela categoria selecionada
-    const produtosFiltrados = todosProdutosData.filter(produto =>
-        produto.categoria === categoria
-    );
-
-    // Adicionar produtos filtrados ao carrossel
-    produtosFiltrados.forEach(produtoData => {
-        // Converter string HTML em elemento DOM
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = produtoData.html;
-        const produtoElement = tempDiv.firstChild;
-
-        // Remover a classe produto-template e adicionar produto-card
-        produtoElement.classList.remove('produto-template');
-        produtoElement.classList.add('produto-card');
-
-        // Adicionar ao carrossel
-        carrossel.appendChild(produtoElement);
-    });
-
-    // Se não houver produtos, mostra mensagem
-    if (produtosFiltrados.length === 0) {
-        carrossel.innerHTML = `
-            <div style="min-width: 100%; text-align: center; padding: 40px; color: #888;">
-                <h3 style="color: #ff8533;">Nenhum produto nesta categoria</h3>
-                <p>Volte em breve para ver nossas novidades!</p>
-            </div>
-        `;
-    }
-}
-
-// 2. Função ÚNICA e OFICIAL para o Carrinho (mantida do Código 1)
+// Função ÚNICA e OFICIAL para o Carrinho (mantida do seu código)
 function atualizarCarrinho(urlDoDjango) {
     // Pega o botão que foi clicado para fazer a animação
     const botaoClicado = event ? event.currentTarget : null;
@@ -833,6 +820,19 @@ function atualizarCarrinho(urlDoDjango) {
         alert('Erro ao adicionar produto. Tente novamente.');
     });
 }
+
+// Ativar filtro circular da categoria atual
+document.addEventListener('DOMContentLoaded', function() {
+    // Verifica qual categoria está ativa pela URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoriaId = urlParams.get('categoria_pai');
+
+    // Se não tiver categoria na URL, ativa a primeira
+    const filtros = document.querySelectorAll('.filtro-link');
+    if (filtros.length > 0 && !categoriaId) {
+        filtros[0].classList.add('active');
+    }
+});
 </script>
 
 </body>
