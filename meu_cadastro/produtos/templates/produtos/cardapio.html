@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conveniência Express</title>
+    <title>Conveniência Oliveira</title>
 
     <style>
         /* ESTILO GERAL - FUNDO PRETO COM BLUR */
@@ -656,7 +656,7 @@
 </header>
 
 <div class="hero-title">
-    <h1>CONVENIÊNCIA EXPRESS</h1>
+    <h1>CONVENIÊNCIA OLIVEIRA</h1>
 </div>
 
 <!-- FILTROS CIRCULARES CLICÁVEIS -->
@@ -734,7 +734,7 @@
                         <div class="preco-acao">
                             <span class="preco">R$ {{ produto.preco }}</span>
                             <button type="button"
-                                    onclick="atualizarCarrinho('{% url 'produtos:carrinho_ajax' produto.id 'adicionar' %}')"
+                                    onclick="verificarSabores(event, '{{ produto.id }}', '{{ produto.nome }}', [{% for s in produto.sabores.all %}'{{ s.nome }}'{% if not forloop.last %}, {% endif %}{% endfor %}])"
                                     class="btn-mais">
                                 +
                             </button>
@@ -787,75 +787,83 @@
 </section>
 
 <script>
-// Função ÚNICA e OFICIAL para o Carrinho (mantida do seu código)
+// Variável global para guardar a URL do produto que está esperando o sabor
+let urlAgendada = "";
+
+function verificarSabores(event, produtoId, produtoNome, listaSabores) {
+    const baseUrl = `{% url 'produtos:carrinho_ajax' 0 'adicionar' %}`.replace('0', produtoId);
+
+    // Se o produto tiver sabores, abre a modal
+    if (listaSabores.length > 0) {
+        urlAgendada = baseUrl; // Guarda a URL base
+        document.getElementById('modal-produto-nome').innerText = produtoNome;
+        const container = document.getElementById('lista-sabores');
+        container.innerHTML = ""; // Limpa sabores anteriores
+
+        listaSabores.forEach(sabor => {
+            const btn = document.createElement('button');
+            btn.innerText = sabor;
+            btn.style = "background: rgba(255,102,0,0.1); border: 1px solid #ff6600; color: #fff; padding: 12px; border-radius: 8px; cursor: pointer; text-align: left; font-weight: 600; transition: 0.3s";
+            btn.onclick = () => confirmarSabor(sabor); // Quando clicar no sabor, confirma
+            container.appendChild(btn);
+        });
+
+        document.getElementById('modal-sabores').style.display = 'flex';
+    } else {
+        // Se NÃO tiver sabor, chama o seu atualizarCarrinho original direto
+        atualizarCarrinho(baseUrl);
+    }
+}
+
+function confirmarSabor(sabor) {
+    // Adiciona o sabor na URL como um parâmetro (Query String)
+    const urlComSabor = `${urlAgendada}?sabor=${encodeURIComponent(sabor)}`;
+    fecharModalSabores();
+    atualizarCarrinho(urlComSabor);
+}
+
+function fecharModalSabores() {
+    document.getElementById('modal-sabores').style.display = 'none';
+}
+
+// SUA FUNÇÃO ORIGINAL (AJUSTADA)
 function atualizarCarrinho(urlDoDjango) {
-    // Pega o botão que foi clicado para fazer a animação
-    const botaoClicado = event ? event.currentTarget : null;
+    // Se o evento existir (clique direto no +), pegamos o botão
+    const botaoClicado = (typeof event !== 'undefined' && event.currentTarget.classList.contains('btn-mais')) ? event.currentTarget : null;
 
     fetch(urlDoDjango, {
         method: 'GET',
         headers: { 'X-Requested-With': 'XMLHttpRequest' }
     })
-    .then(response => {
-        if (!response.ok) throw new Error('Erro na rede');
-        return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
         if (data.sucesso) {
-            // ATUALIZA A LISTA: Injeta o HTML novo na div do carrinho
             const container = document.getElementById('resumo-carrinho-container');
-            if (container) {
-                container.innerHTML = data.html;
-            }
+            if (container) container.innerHTML = data.html;
 
-            // ATUALIZA O TOTAL: Procura a div de total que criamos
             const totalDisplay = document.getElementById('total-carrinho-display');
-            if (totalDisplay) {
-                totalDisplay.innerText = `TOTAL: ${data.total}`;
-            }
+            if (totalDisplay) totalDisplay.innerText = `TOTAL: ${data.total}`;
 
-            // FEEDBACK VISUAL: Animação de brilho no botão +
+            // Feedback visual se tivermos o botão
             if (botaoClicado) {
                 botaoClicado.classList.add('clicado');
                 setTimeout(() => botaoClicado.classList.remove('clicado'), 300);
-
-                // Cria e exibe o aviso flutuante "Adicionado!"
-                const aviso = document.createElement('div');
-                aviso.className = 'aviso-adicionado';
-                aviso.innerText = 'Adicionado!';
-
-                // Insere o aviso no container do produto
-                const precoAcao = botaoClicado.parentElement;
-                precoAcao.appendChild(aviso);
-
-                // Remove o aviso do HTML após a animação (800ms)
-                setTimeout(() => {
-                    if (aviso.parentNode) {
-                        aviso.parentNode.removeChild(aviso);
-                    }
-                }, 800);
             }
         }
-    })
-    .catch(error => {
-        console.error('Erro ao atualizar o carrinho:', error);
-        alert('Erro ao adicionar produto. Tente novamente.');
     });
 }
-
-// Ativar filtro circular da categoria atual
-document.addEventListener('DOMContentLoaded', function() {
-    // Verifica qual categoria está ativa pela URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const categoriaId = urlParams.get('categoria_pai');
-
-    // Se não tiver categoria na URL, ativa a primeira
-    const filtros = document.querySelectorAll('.filtro-link');
-    if (filtros.length > 0 && !categoriaId) {
-        filtros[0].classList.add('active');
-    }
-});
 </script>
+<div id="modal-sabores" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; backdrop-filter: blur(8px); align-items: center; justify-content: center;">
+    <div style="background: #111; border: 1px solid #ff6600; width: 90%; max-width: 400px; padding: 25px; border-radius: 15px; box-shadow: 0 0 30px rgba(255,102,0,0.2);">
+        <h2 id="modal-titulo" style="color: #ff6600; margin-top: 0; font-size: 1.4rem;">Escolha o Sabor</h2>
+        <p style="color: #ccc; font-size: 0.9rem; margin-bottom: 20px;">Selecione uma opção para o seu <span id="modal-produto-nome"></span>:</p>
+
+        <div id="lista-sabores" style="display: grid; gap: 10px; max-height: 300px; overflow-y: auto; padding-right: 5px;">
+            </div>
+
+        <button onclick="fecharModalSabores()" style="margin-top: 20px; width: 100%; background: transparent; border: 1px solid #444; color: #888; padding: 10px; border-radius: 8px; cursor: pointer;">Cancelar</button>
+    </div>
+</div>
 
 </body>
 </html>

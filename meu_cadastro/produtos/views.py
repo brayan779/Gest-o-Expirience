@@ -140,6 +140,7 @@ def finalizar_pedido(request):
         telefone = request.POST.get('telefone')
         endereco = request.POST.get('endereco')
 
+        # Criamos o pedido inicial
         novo_pedido = Pedido.objects.create(
             nome_cliente=nome,
             telefone=telefone,
@@ -148,19 +149,24 @@ def finalizar_pedido(request):
         )
 
         total_geral = 0
-        for item_id, dados in carrinho.items():
-            produto = get_object_or_404(Produto, id=item_id)
+        for item_key, dados in carrinho.items():
+            produto = get_object_or_404(Produto, id=dados['produto_id'])
             preco = float(dados['preco'])
             qtd = dados['quantidade']
+            sabor = dados.get('sabor', '')
+
+            # SOMA O TOTAL AQUI (Faltava isso!)
             total_geral += preco * qtd
 
             ItemPedido.objects.create(
                 pedido=novo_pedido,
                 produto=produto,
                 quantidade=qtd,
-                preco_unitario=preco
+                preco_unitario=preco,
+                sabor_escolhido=sabor  # Salva o sabor no banco
             )
 
+        # ATUALIZA O TOTAL NO PEDIDO
         novo_pedido.total = total_geral
         novo_pedido.save()
 
@@ -244,41 +250,48 @@ def caderno_gestao(request):
 
 def gerenciar_carrinho_ajax(request, produto_id, acao):
     carrinho = request.session.get('carrinho', {})
+    # Buscamos o produto real pelo ID numérico
     produto = get_object_or_404(Produto, id=produto_id)
-    id_str = str(produto_id)
+    sabor_escolhido = request.GET.get('sabor', '')
 
-    # ADICIONA OU REMOVE
+    # Chave única para diferenciar itens (Ex: "12-Framboesa")
+    item_key = f"{produto_id}-{sabor_escolhido}" if sabor_escolhido else str(produto_id)
+
     if acao == 'adicionar':
-        if id_str in carrinho:
-            carrinho[id_str]['quantidade'] += 1
+        if item_key in carrinho:
+            carrinho[item_key]['quantidade'] += 1
         else:
-            carrinho[id_str] = {'nome': produto.nome, 'preco': str(produto.preco), 'quantidade': 1}
+            carrinho[item_key] = {
+                'produto_id': str(produto_id), # Guardamos o ID original
+                'nome': produto.nome,
+                'preco': str(produto.preco),
+                'quantidade': 1,
+                'sabor': sabor_escolhido
+            }
     elif acao == 'remover':
-        if id_str in carrinho:
-            if carrinho[id_str]['quantidade'] > 1:
-                carrinho[id_str]['quantidade'] -= 1
+        if item_key in carrinho:
+            if carrinho[item_key]['quantidade'] > 1:
+                carrinho[item_key]['quantidade'] -= 1
             else:
-                del carrinho[id_str]
+                del carrinho[item_key]
 
-    # SALVA NA SESSÃO
     request.session['carrinho'] = carrinho
     request.session.modified = True
 
-    # --- PARTE QUE PRECISA DE AJUSTE: ---
+    # Reconstrução da lista para o HTML
     itens_detalhados = []
     total_carrinho = 0
-
-    for id_chave, d in carrinho.items():
-        subtotal = float(d['preco']) * d['quantidade']
+    for key, dados in carrinho.items():
+        subtotal = float(dados['preco']) * dados['quantidade']
         total_carrinho += subtotal
         itens_detalhados.append({
-            'produto_id': id_chave,  # << ESSA LINHA É A CHAVE PRO BOTÃO FUNCIONAR
-            'nome': d['nome'],
-            'quantidade': d['quantidade'],
+            'produto_id': dados['produto_id'], # ID para o botão remover
+            'nome': dados['nome'],
+            'sabor': dados.get('sabor', ''),
+            'quantidade': dados['quantidade'],
             'subtotal': subtotal
         })
 
-    # Renderiza o HTML enviando a lista com os IDs
     html_lista = render_to_string('produtos/includes/resumo_itens.html', {
         'itens_carrinho': itens_detalhados
     })
@@ -288,3 +301,10 @@ def gerenciar_carrinho_ajax(request, produto_id, acao):
         'html': html_lista,
         'total': f"R$ {total_carrinho:.2f}"
     })
+
+def recusar_pedido(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+    # Você pode optar por deletar ou apenas mudar o status para 'recusado'
+    # Para limpar o painel totalmente, vamos deletar:
+    pedido.delete()
+    return redirect('produtos:painel_dono')

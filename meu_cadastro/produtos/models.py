@@ -1,7 +1,6 @@
 from django.db import models
 from django.utils import timezone
 
-
 class Categoria(models.Model):
     nome = models.CharField(max_length=50)
     pai = models.ForeignKey(
@@ -32,6 +31,16 @@ class Categoria(models.Model):
         verbose_name_plural = "Categorias"
         ordering = ['ordem', 'nome']
 
+class Sabor(models.Model):
+    nome = models.CharField(max_length=50)
+    disponivel = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.nome
+
+    class Meta:
+        verbose_name = "Sabor"
+        verbose_name_plural = "Sabores"
 
 class Produto(models.Model):
     categoria = models.ForeignKey(
@@ -45,6 +54,7 @@ class Produto(models.Model):
     imagem = models.ImageField(upload_to='produtos/', null=True, blank=True)
     disponivel = models.BooleanField(default=True)
     ordem = models.IntegerField(default=0, help_text="Ordem de exibição")
+    sabores = models.ManyToManyField(Sabor, blank=True, related_name='produtos')
 
     def __str__(self):
         return self.nome
@@ -80,12 +90,21 @@ class Pedido(models.Model):
 
     def itens_resumo_whats(self):
         itens = self.itens.all()
-        # O %0A faz o WhatsApp pular uma linha para cada produto
-        return "%0A".join([f"• {item.quantidade}x {item.produto.nome}" for item in itens])
+        # Esta função formata a lista para o link do WhatsApp
+        return "%0A".join([
+            f"• {item.quantidade}x {item.produto.nome} ({item.sabor_escolhido if item.sabor_escolhido else 'S/S'})"
+            for item in itens
+        ])
 
     def itens_resumo(self):
         itens = self.itens.all()
-        return ", ".join([f"{item.quantidade}x {item.produto.nome}" for item in itens])
+        # Esta função formata para exibição em texto no seu site/painel
+        return "\n".join([
+            f"• {item.quantidade}x {item.produto.nome} ({item.sabor_escolhido if item.sabor_escolhido else 'S/Sabor'})"
+            for item in itens
+        ])
+
+
 
 
 class ItemPedido(models.Model):
@@ -93,6 +112,8 @@ class ItemPedido(models.Model):
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
     quantidade = models.PositiveIntegerField(default=1)
     preco_unitario = models.DecimalField(max_digits=7, decimal_places=2)
+    sabor_escolhido = models.CharField(max_length=50, null=True, blank=True)
 
     def total_item(self):
         return self.quantidade * self.preco_unitario
+

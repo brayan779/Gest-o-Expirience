@@ -16,4 +16,5 @@ urlpatterns = [
     path('imprimir/<int:pedido_id>/', views.imprimir_pedido, name='imprimir_pedido'),
     path('caderno/', views.caderno_gestao, name='caderno'),
     path('carrinho/ajax/<int:produto_id>/<str:acao>/', views.gerenciar_carrinho_ajax, name='carrinho_ajax'),
+    path('pedido/recusar/<int:pedido_id>/', views.recusar_pedido, name='recusar_pedido'),
 ]
