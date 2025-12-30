@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acesso ao Painel | Conveniência Express</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* VARIÁVEIS E RESET */
+        :root {
+            --primary: #FF6B35;
+            --primary-light: #FF8E53;
+            --primary-dark: #D85A2B;
+            --primary-glow: rgba(255, 107, 53, 0.3);
+            --black: #000000;
+            --dark-1: #0A0A0A;
+            --dark-2: #111111;
+            --dark-3: #1A1A1A;
+            --dark-4: #222222;
+            --light: #FFFFFF;
+            --gray-1: #888888;
+            --gray-2: #666666;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            --radius: 12px;
+            --radius-sm: 8px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--black);
+            color: var(--light);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background-image:
+                radial-gradient(circle at 20% 30%, rgba(255, 107, 53, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255, 107, 53, 0.03) 0%, transparent 50%);
+        }
+
+        /* CONTAINER PRINCIPAL */
+        .login-container {
+            width: 100%;
+            max-width: 440px;
+            padding: 20px;
+        }
+
+        /* CARD DE LOGIN */
+        .login-card {
+            background: var(--dark-2);
+            border-radius: var(--radius);
+            box-shadow:
+                var(--shadow-lg),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            padding: 48px 40px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--dark-4);
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        /* LOGO */
+        .logo-container {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 14px;
+            margin-bottom: 16px;
+            color: var(--light);
+            font-size: 24px;
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.25);
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--light);
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .logo-subtext {
+            font-size: 14px;
+            color: var(--gray-1);
+            font-weight: 400;
+        }
+
+        /* TÍTULO */
+        .login-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .login-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--light);
+            margin-bottom: 8px;
+        }
+
+        .login-subtitle {
+            font-size: 15px;
+            color: var(--gray-1);
+            font-weight: 400;
+        }
+
+        /* FORMULÁRIO */
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--gray-1);
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 16px 16px 16px 48px;
+            background: var(--dark-3);
+            border: 1px solid var(--dark-4);
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            color: var(--light);
+            transition: var(--transition);
+            outline: none;
+            font-family: inherit;
+        }
+
+        .input-field:hover {
+            border-color: var(--primary-dark);
+        }
+
+        .input-field:focus {
+            background: var(--dark-3);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            color: var(--gray-2);
+            font-size: 18px;
+            transition: var(--transition);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .input-field:focus + .input-icon {
+            color: var(--primary);
+        }
+
+        /* BOTÃO */
+        .login-button {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--light);
+            border: none;
+            padding: 16px;
+            border-radius: var(--radius-sm);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.3);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+        .login-button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: 0.5s;
+        }
+
+        .login-button:hover::after {
+            left: 100%;
+        }
+
+        /* MENSAGEM DE ERRO */
+        .error-message {
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            color: #ff6b6b;
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .error-message.show {
+            display: flex;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* RODAPÉ */
+        .login-footer {
+            margin-top: 32px;
+            text-align: center;
+            padding-top: 24px;
+            border-top: 1px solid var(--dark-4);
+        }
+
+        .footer-text {
+            font-size: 13px;
+            color: var(--gray-2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* TOGGLE SENHA */
+        .password-toggle {
+            position: absolute;
+            right: 16px;
+            background: none;
+            border: none;
+            color: var(--gray-2);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        .password-toggle:hover {
+            background: rgba(255, 107, 53, 0.1);
+            color: var(--primary);
+        }
+
+        /* ESTILOS PARA LOADING */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--light);
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* DECORAÇÃO */
+        .glow-effect {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            filter: blur(40px);
+        }
+
+        .glow-1 {
+            top: -100px;
+            right: -100px;
+            opacity: 0.3;
+        }
+
+        .glow-2 {
+            bottom: -100px;
+            left: -100px;
+            opacity: 0.2;
+        }
+
+        /* RESPONSIVIDADE */
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 40px 24px;
+            }
+
+            .login-title {
+                font-size: 24px;
+            }
+
+            .logo-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+            }
+
+            .logo-text {
+                font-size: 20px;
+            }
+
+            .login-button {
+                padding: 14px;
+            }
+        }
+
+        /* ANIMAÇÃO DE ENTRADA */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- DECORAÇÃO DE GLOW -->
+    <div class="glow-effect glow-1"></div>
+    <div class="glow-effect glow-2"></div>
+
+    <!-- CONTAINER PRINCIPAL -->
+    <div class="login-container">
+        <!-- CARD DE LOGIN -->
+        <div class="login-card fade-in">
+            <!-- LOGO -->
+            <div class="logo-container">
+                <div class="logo-icon">
+                    <i class="fas fa-store"></i>
+                </div>
+                <div class="logo-text">Conveniência Express</div>
+                <div class="logo-subtext">Painel Administrativo</div>
+            </div>
+
+            <!-- TÍTULO -->
+            <div class="login-header">
+                <h1 class="login-title">Acesso Restrito</h1>
+                <p class="login-subtitle">Entre com suas credenciais para continuar</p>
+            </div>
+
+            <!-- MENSAGEM DE ERRO -->
+            <div class="error-message" id="errorMessage">
+                <i class="fas fa-exclamation-circle"></i>
+                <span id="errorText">Credenciais inválidas</span>
+            </div>
+
+            <!-- FORMULÁRIO -->
+            <form method="post" class="login-form">
+                {% csrf_token %}
+
+                <div class="input-group">
+                    <label class="input-label">Usuário</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user input-icon"></i>
+                        <input type="text"
+                               name="username"
+                               class="input-field"
+                               placeholder="Digite seu usuário"
+                               required
+                               autocomplete="username">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">Senha</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password"
+                               name="password"
+                               class="input-field"
+                               placeholder="Digite sua senha"
+                               required
+                               autocomplete="current-password"
+                               id="passwordField">
+                        <button type="button" class="password-toggle" id="togglePassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="login-button" id="submitButton">
+                    <span>Entrar no Painel</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <!-- RODAPÉ -->
+            <div class="login-footer">
+                <div class="footer-text">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Sistema seguro e criptografado</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

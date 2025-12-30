@@ -17,4 +17,12 @@ urlpatterns = [
     path('caderno/', views.caderno_gestao, name='caderno'),
     path('carrinho/ajax/<int:produto_id>/<str:acao>/', views.gerenciar_carrinho_ajax, name='carrinho_ajax'),
     path('pedido/recusar/<int:pedido_id>/', views.recusar_pedido, name='recusar_pedido'),
+    path('pedido/<int:pedido_id>/mudar-status/<str:novo_status>/', views.mudar_status, name='mudar_status'),
+    path('pedido/<int:pedido_id>/registrar/', views.registrar_caderno, name='registrar_caderno'),
+    path('pedido/<int:pedido_id>/recusar/', views.recusar_pedido, name='recusar_pedido'),
+    path('pedido/<int:pedido_id>/imprimir/', views.imprimir_pedido, name='imprimir_pedido'),
+
+
+
+
 ]

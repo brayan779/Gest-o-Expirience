@@ -74,14 +74,16 @@ class Pedido(models.Model):
     STATUS_CHOICES = [
         ('novo', 'Em Negociação'),
         ('confirmado', 'Confirmado/Preparação'),
-        ('finalizado', 'Registrado no Caderno'),
+        ('finalizado', 'Finalizado'),
+        ('registrado', 'Registrado no Caderno'),  # Adicione este status
+        ('cancelado', 'Cancelado'),
     ]
     # ... seus campos de nome, telefone, endereco ...
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='novo')
 
     nome_cliente = models.CharField(max_length=150)
     telefone = models.CharField(max_length=20)
-    endereco = models.TextField()
+    endereco = models.TextField(blank=True)
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     data_pedido = models.DateTimeField(auto_now_add=True)
 

@@ -1,4 +1,3 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -43,7 +42,6 @@
             font-family: 'Segoe UI', system-ui, sans-serif;
             min-height: 100vh;
             overflow-x: hidden;
-            width: 100%;
         }
 
         @keyframes fadeIn {
@@ -75,7 +73,6 @@
             top: 0;
             z-index: 1000;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-            width: 100%;
         }
 
         .logo-container {
@@ -173,8 +170,6 @@
             align-items: center;
             gap: 8px;
             transition: var(--transition);
-            border: none;
-            font-family: inherit;
         }
 
         .logout-btn:hover {
@@ -187,14 +182,12 @@
         .kanban-header {
             padding: 30px 30px 20px;
             animation: fadeIn 0.8s ease;
-            width: 100%;
         }
 
         .header-content {
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            width: 100%;
         }
 
         .title-section h1 {
@@ -251,8 +244,6 @@
             gap: 25px;
             padding: 0 30px 40px;
             animation: slideInRight 0.6s ease;
-            width: 100%;
-            box-sizing: border-box;
         }
 
         .column {
@@ -262,7 +253,7 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            min-height: 600px;
+            height: calc(100vh - 200px);
             transition: var(--transition);
             box-shadow: var(--shadow);
         }
@@ -332,9 +323,6 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             position: relative;
             overflow: hidden;
-            min-height: 200px;
-            display: flex;
-            flex-direction: column;
         }
 
         .pedido-card::before {
@@ -386,7 +374,7 @@
         }
 
         .pedido-details {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .detail-row {
@@ -407,7 +395,7 @@
             background: rgba(26, 26, 26, 0.7);
             border-radius: var(--radius-sm);
             padding: 12px;
-            margin-top: 10px;
+            margin-top: 15px;
             border: 1px solid var(--dark-3);
         }
 
@@ -430,25 +418,22 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 10px;
-            margin-top: 15px;
+            margin-top: 20px;
         }
 
         .action-btn {
-            padding: 10px 8px;
+            padding: 12px;
             border-radius: var(--radius-sm);
             border: none;
             font-weight: 700;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 8px;
             cursor: pointer;
             transition: var(--transition);
             text-decoration: none;
-            text-align: center;
-            font-family: inherit;
-            min-height: 40px;
         }
 
         .action-btn:hover {
@@ -471,44 +456,11 @@
             color: white;
         }
 
-        .btn-finalizar {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            width: 100%;
-            margin-top: 10px;
-            padding: 12px;
-        }
-
-        .btn-registrar-caderno {
+        .btn-register {
             background: linear-gradient(135deg, var(--success), #05b587);
             color: white;
             width: 100%;
-            margin-top: 10px;
-            padding: 12px;
-        }
-
-        .btn-recusar {
-            background: linear-gradient(135deg, var(--danger), #d00000);
-            color: white;
-            margin-top: 10px;
-            width: 100%;
-            padding: 10px;
-            border-radius: var(--radius-sm);
-            border: none;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: var(--transition);
-            text-decoration: none;
-            min-height: 40px;
-        }
-
-        .btn-recusar:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(239, 71, 111, 0.3);
+            margin-top: 15px;
         }
 
         .minimal-card {
@@ -685,14 +637,6 @@
                 height: auto;
                 max-height: 70vh;
             }
-
-            .actions-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .btn-recusar {
-                grid-column: span 2;
-            }
         }
 
         @media (max-width: 600px) {
@@ -715,20 +659,8 @@
                 grid-template-columns: 1fr;
             }
 
-            .btn-recusar {
-                grid-column: 1;
-            }
-
             .action-btn {
                 width: 100%;
-            }
-
-            .pedido-card {
-                padding: 15px;
-            }
-
-            .detail-row {
-                font-size: 0.85rem;
             }
         }
 
@@ -762,22 +694,14 @@
             bottom: -100px;
             left: -100px;
         }
-
-        .cards-container {
-            min-height: 400px;
-        }
     </style>
 </head>
 <body>
-    <!-- [TODO O RESTO DO HTML PERMANECE IGUAL AO SEU CÓDIGO ANTERIOR] -->
-    <!-- O HTML que você já tem está correto, só faltava o CSS completo -->
-
     <div class="bg-decoration">
         <div class="bg-circle circle-1"></div>
         <div class="bg-circle circle-2"></div>
     </div>
 
-    <!-- NAVBAR UNIFICADA -->
     <nav class="navbar">
         <div class="logo-container">
             <div class="logo-icon">
@@ -787,15 +711,15 @@
         </div>
 
         <div class="nav-links">
-            <a href="/" class="nav-link">
+            <a href="#" class="nav-link">
                 <i class="fas fa-store"></i>
                 <span>Ver Loja</span>
             </a>
-            <a href="{% url 'produtos:painel_dono' %}" class="nav-link active">
+            <a href="#" class="nav-link active">
                 <i class="fas fa-gamepad"></i>
                 <span>Painel de Operação</span>
             </a>
-            <a href="{% url 'produtos:caderno' %}" class="nav-link">
+            <a href="#" class="nav-link">
                 <i class="fas fa-book"></i>
                 <span>Gestão</span>
             </a>
@@ -803,17 +727,14 @@
 
         <div class="user-section">
             <div class="user-info">
-                <div class="user-name">{{ user.username }}</div>
+                <div class="user-name">Operador Demo</div>
                 <div class="user-role">Administrador</div>
             </div>
 
-            <form action="/admin/logout/" method="post" style="display: inline;">
-                {% csrf_token %}
-                <button type="submit" class="logout-btn">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Sair</span>
-                </button>
-            </form>
+            <button type="button" class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Sair</span>
+            </button>
         </div>
     </nav>
 
@@ -826,15 +747,15 @@
 
             <div class="stats-container">
                 <div class="stat-card">
-                    <div class="stat-value" id="count-novos">{{ novos|length }}</div>
+                    <div class="stat-value" id="count-novos">3</div>
                     <div class="stat-label">Novos Pedidos</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value" id="count-confirmados">{{ confirmados|length }}</div>
+                    <div class="stat-value" id="count-confirmados">2</div>
                     <div class="stat-label">Confirmados</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value" id="count-finalizados">{{ finalizados|length }}</div>
+                    <div class="stat-value" id="count-finalizados">1</div>
                     <div class="stat-label">Finalizados</div>
                 </div>
             </div>
@@ -842,7 +763,6 @@
     </div>
 
     <div class="kanban-container">
-        <!-- COLUNA 1: NOVOS PEDIDOS -->
         <div class="column">
             <div class="column-header">
                 <div class="column-title">
@@ -851,19 +771,18 @@
                     </div>
                     <span>Novos Pedidos</span>
                 </div>
-                <div class="column-count" id="count-col-novos">{{ novos|length }}</div>
+                <div class="column-count" id="count-col-novos">3</div>
             </div>
 
             <div class="cards-container" id="coluna-novos">
-                {% for pedido in novos %}
-                <div class="pedido-card {% if forloop.first %}new{% endif %}">
+                <div class="pedido-card new">
                     <div class="pedido-header">
                         <div>
-                            <div class="pedido-id">#{{ pedido.id }}</div>
-                            <div class="pedido-cliente">{{ pedido.nome_cliente }}</div>
+                            <div class="pedido-id">#1001</div>
+                            <div class="pedido-cliente">João Silva</div>
                             <div class="pedido-time">
                                 <i class="fas fa-clock"></i>
-                                <span>{% if pedido.data %}{{ pedido.data|date:"H:i" }}{% else %}Agora{% endif %}</span>
+                                <span>Agora</span>
                             </div>
                         </div>
                     </div>
@@ -871,75 +790,161 @@
                     <div class="pedido-details">
                         <div class="detail-row">
                             <i class="fas fa-phone detail-icon"></i>
-                            <span>{{ pedido.telefone }}</span>
+                            <span>(11) 99999-9999</span>
                         </div>
                         <div class="detail-row">
                             <i class="fas fa-shopping-cart detail-icon"></i>
-                            <span>{{ pedido.itens_resumo }}</span>
+                            <span>2x Pizza Calabresa, 1x Coca 2L</span>
                         </div>
                         <div class="detail-row">
                             <i class="fas fa-money-bill-wave detail-icon"></i>
-                            <span><strong>R$ {{ pedido.total }}</strong></span>
+                            <span><strong>R$ 89.90</strong></span>
                         </div>
                     </div>
 
-                    {% if pedido.itens_detalhados %}
                     <div class="itens-list">
                         <div class="itens-title">
                             <i class="fas fa-list"></i>
                             <span>Itens do Pedido</span>
                         </div>
                         <div class="itens-content">
-                            {{ pedido.itens_detalhados }}
+                            2x Pizza Calabresa (R$ 39,90 cada)<br>
+                            1x Coca-Cola 2L (R$ 10,00)
                         </div>
                     </div>
-                    {% endif %}
 
                     <div class="actions-grid">
-                        {% if pedido.telefone %}
-                        <a href="https://api.whatsapp.com/send?phone=55{{ pedido.telefone }}&text=Olá {{ pedido.nome_cliente }}! 👋%0A%0ARecebemos seu pedido nº {{ pedido.id }}:%0A%0A*Itens:*%0A{{ pedido.itens_resumo_whats|default:pedido.itens_resumo }}%0A%0A*Total:* R$ {{ pedido.total }}%0A%0A---%0A*PAGAMENTO*%0APara confirmação, basta realizar o PIX para a chave: *[SUA CHAVE PIX AQUI]*%0A%0ALogo após o envio do comprovante, seu pedido sai para entrega! 🚀"
-                           target="_blank"
-                           class="action-btn btn-whatsapp">
+                        <button class="action-btn btn-whatsapp" onclick="atenderPedido(1001)">
                             <i class="fab fa-whatsapp"></i>
                             <span>Atender</span>
-                        </a>
-                        {% endif %}
+                        </button>
 
-                        <a href="{% url 'produtos:imprimir_pedido' pedido.id %}"
-                           target="_blank"
-                           class="action-btn btn-print">
+                        <button class="action-btn btn-print" onclick="imprimirPedido(1001)">
                             <i class="fas fa-print"></i>
                             <span>Imprimir</span>
-                        </a>
+                        </button>
 
-                        <a href="{% url 'produtos:mudar_status' pedido.id 'confirmado' %}"
-                           class="action-btn btn-confirm">
+                        <button class="action-btn btn-confirm" onclick="moverPedido(1001, 'confirmados')">
                             <i class="fas fa-check"></i>
                             <span>Aceitar</span>
-                        </a>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="pedido-card">
+                    <div class="pedido-header">
+                        <div>
+                            <div class="pedido-id">#1002</div>
+                            <div class="pedido-cliente">Maria Santos</div>
+                            <div class="pedido-time">
+                                <i class="fas fa-clock"></i>
+                                <span>15:30</span>
+                            </div>
+                        </div>
                     </div>
 
-                    <button onclick="if(confirm('Tem certeza que deseja recusar e apagar este pedido?')) { window.location.href='{% url 'produtos:recusar_pedido' pedido.id %}'; }"
-                            class="btn-recusar">
-                        <i class="fas fa-times"></i>
-                        <span>Recusar Pedido</span>
-                    </button>
-                </div>
-                {% empty %}
-                <div class="empty-state">
-                    <div class="empty-icon">
-                        <i class="fas fa-inbox"></i>
+                    <div class="pedido-details">
+                        <div class="detail-row">
+                            <i class="fas fa-phone detail-icon"></i>
+                            <span>(11) 98888-8888</span>
+                        </div>
+                        <div class="detail-row">
+                            <i class="fas fa-shopping-cart detail-icon"></i>
+                            <span>1x Hambúrguer Artesanal, 1x Batata</span>
+                        </div>
+                        <div class="detail-row">
+                            <i class="fas fa-money-bill-wave detail-icon"></i>
+                            <span><strong>R$ 45.50</strong></span>
+                        </div>
                     </div>
-                    <div class="empty-text">Nenhum pedido novo</div>
-                    <div class="empty-subtext">
-                        Novos pedidos aparecerão aqui automaticamente
+
+                    <div class="itens-list">
+                        <div class="itens-title">
+                            <i class="fas fa-list"></i>
+                            <span>Itens do Pedido</span>
+                        </div>
+                        <div class="itens-content">
+                            1x Hambúrguer Artesanal (R$ 28,90)<br>
+                            1x Batata Frita Média (R$ 16,60)
+                        </div>
+                    </div>
+
+                    <div class="actions-grid">
+                        <button class="action-btn btn-whatsapp" onclick="atenderPedido(1002)">
+                            <i class="fab fa-whatsapp"></i>
+                            <span>Atender</span>
+                        </button>
+
+                        <button class="action-btn btn-print" onclick="imprimirPedido(1002)">
+                            <i class="fas fa-print"></i>
+                            <span>Imprimir</span>
+                        </button>
+
+                        <button class="action-btn btn-confirm" onclick="moverPedido(1002, 'confirmados')">
+                            <i class="fas fa-check"></i>
+                            <span>Aceitar</span>
+                        </button>
                     </div>
                 </div>
-                {% endfor %}
+
+                <div class="pedido-card">
+                    <div class="pedido-header">
+                        <div>
+                            <div class="pedido-id">#1003</div>
+                            <div class="pedido-cliente">Carlos Oliveira</div>
+                            <div class="pedido-time">
+                                <i class="fas fa-clock"></i>
+                                <span>14:45</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pedido-details">
+                        <div class="detail-row">
+                            <i class="fas fa-phone detail-icon"></i>
+                            <span>(11) 97777-7777</span>
+                        </div>
+                        <div class="detail-row">
+                            <i class="fas fa-shopping-cart detail-icon"></i>
+                            <span>3x Pizza Família, 2x Guaraná</span>
+                        </div>
+                        <div class="detail-row">
+                            <i class="fas fa-money-bill-wave detail-icon"></i>
+                            <span><strong>R$ 120.00</strong></span>
+                        </div>
+                    </div>
+
+                    <div class="itens-list">
+                        <div class="itens-title">
+                            <i class="fas fa-list"></i>
+                            <span>Itens do Pedido</span>
+                        </div>
+                        <div class="itens-content">
+                            3x Pizza Família (R$ 45,00 cada)<br>
+                            2x Guaraná Antarctica 2L (R$ 15,00 cada)
+                        </div>
+                    </div>
+
+                    <div class="actions-grid">
+                        <button class="action-btn btn-whatsapp" onclick="atenderPedido(1003)">
+                            <i class="fab fa-whatsapp"></i>
+                            <span>Atender</span>
+                        </button>
+
+                        <button class="action-btn btn-print" onclick="imprimirPedido(1003)">
+                            <i class="fas fa-print"></i>
+                            <span>Imprimir</span>
+                        </button>
+
+                        <button class="action-btn btn-confirm" onclick="moverPedido(1003, 'confirmados')">
+                            <i class="fas fa-check"></i>
+                            <span>Aceitar</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- COLUNA 2: CONFIRMADOS -->
         <div class="column">
             <div class="column-header">
                 <div class="column-title">
@@ -948,16 +953,15 @@
                     </div>
                     <span>Confirmados</span>
                 </div>
-                <div class="column-count" id="count-col-confirmados">{{ confirmados|length }}</div>
+                <div class="column-count" id="count-col-confirmados">2</div>
             </div>
 
             <div class="cards-container" id="coluna-confirmados">
-                {% for pedido in confirmados %}
                 <details class="minimal-card">
                     <summary class="minimal-summary">
                         <div class="minimal-info">
-                            <div class="minimal-id">#{{ pedido.id }}</div>
-                            <div class="minimal-cliente">{{ pedido.nome_cliente }}</div>
+                            <div class="minimal-id">#999</div>
+                            <div class="minimal-cliente">Ana Beatriz</div>
                         </div>
                         <div class="minimal-arrow">
                             <i class="fas fa-chevron-down"></i>
@@ -965,52 +969,68 @@
                     </summary>
 
                     <div class="minimal-content">
-                        {% if pedido.endereco %}
                         <div class="detail-row">
                             <i class="fas fa-map-marker-alt detail-icon"></i>
-                            <span>{{ pedido.endereco }}</span>
+                            <span>Av. Paulista, 1000 - Apto 45</span>
                         </div>
-                        {% endif %}
-
                         <div class="detail-row">
                             <i class="fas fa-phone detail-icon"></i>
-                            <span>{{ pedido.telefone }}</span>
+                            <span>(11) 96666-6666</span>
                         </div>
-
-                        {% if pedido.itens_resumo %}
                         <div class="detail-row">
                             <i class="fas fa-shopping-cart detail-icon"></i>
-                            <span>{{ pedido.itens_resumo }}</span>
+                            <span>1x Lasanha, 2x Refrigerante, 1x Salada</span>
                         </div>
-                        {% endif %}
-
                         <div class="detail-row">
                             <i class="fas fa-money-bill-wave detail-icon"></i>
-                            <span><strong>Total: R$ {{ pedido.total }}</strong></span>
+                            <span><strong>Total: R$ 78.50</strong></span>
                         </div>
 
-                        <a href="{% url 'produtos:mudar_status' pedido.id 'finalizado' %}"
-                           class="action-btn btn-finalizar">
+                        <button class="action-btn btn-register" onclick="moverPedido(999, 'finalizados')">
                             <i class="fas fa-check-circle"></i>
-                            <span>Finalizar (mover para Finalizados)</span>
-                        </a>
+                            <span>Finalizar e Registrar</span>
+                        </button>
                     </div>
                 </details>
-                {% empty %}
-                <div class="empty-state">
-                    <div class="empty-icon">
-                        <i class="fas fa-rocket"></i>
+
+                <details class="minimal-card">
+                    <summary class="minimal-summary">
+                        <div class="minimal-info">
+                            <div class="minimal-id">#998</div>
+                            <div class="minimal-cliente">Roberto Alves</div>
+                        </div>
+                        <div class="minimal-arrow">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </summary>
+
+                    <div class="minimal-content">
+                        <div class="detail-row">
+                            <i class="fas fa-map-marker-alt detail-icon"></i>
+                            <span>Rua das Flores, 123</span>
+                        </div>
+                        <div class="detail-row">
+                            <i class="fas fa-phone detail-icon"></i>
+                            <span>(11) 95555-5555</span>
+                        </div>
+                        <div class="detail-row">
+                            <i class="fas fa-shopping-cart detail-icon"></i>
+                            <span>2x Pizza Margherita, 1x Coca-Cola</span>
+                        </div>
+                        <div class="detail-row">
+                            <i class="fas fa-money-bill-wave detail-icon"></i>
+                            <span><strong>Total: R$ 95.80</strong></span>
+                        </div>
+
+                        <button class="action-btn btn-register" onclick="moverPedido(998, 'finalizados')">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Finalizar e Registrar</span>
+                        </button>
                     </div>
-                    <div class="empty-text">Nenhum pedido confirmado</div>
-                    <div class="empty-subtext">
-                        Aceite pedidos na coluna "Novos Pedidos"
-                    </div>
-                </div>
-                {% endfor %}
+                </details>
             </div>
         </div>
 
-        <!-- COLUNA 3: FINALIZADOS -->
         <div class="column">
             <div class="column-header">
                 <div class="column-title">
@@ -1019,48 +1039,22 @@
                     </div>
                     <span>Finalizados</span>
                 </div>
-                <div class="column-count" id="count-col-finalizados">{{ finalizados|length }}</div>
+                <div class="column-count" id="count-col-finalizados">1</div>
             </div>
 
             <div class="cards-container" id="coluna-finalizados">
-                {% for pedido in finalizados %}
                 <div class="minimal-card">
-                    <div class="minimal-summary">
+                    <div class="minimal-summary" style="cursor: default; opacity: 0.8;">
                         <div class="minimal-info">
-                            <div class="minimal-id">#{{ pedido.id }}</div>
-                            <div class="minimal-cliente">{{ pedido.nome_cliente }}</div>
+                            <div class="minimal-id">#997</div>
+                            <div class="minimal-cliente">Fernanda Costa</div>
                             <div style="color: #06D6A0; font-size: 0.8rem;">
-                                <i class="fas fa-check-circle"></i> Finalizado
+                                <i class="fas fa-check-circle"></i> Finalizado às 13:20
                             </div>
                         </div>
                     </div>
-
-                    <div class="minimal-content">
-                        <div class="detail-row">
-                            <i class="fas fa-phone detail-icon"></i>
-                            <span>{{ pedido.telefone }}</span>
-                        </div>
-
-                        {% if pedido.itens_resumo %}
-                        <div class="detail-row">
-                            <i class="fas fa-shopping-cart detail-icon"></i>
-                            <span>{{ pedido.itens_resumo }}</span>
-                        </div>
-                        {% endif %}
-
-                        <div class="detail-row">
-                            <i class="fas fa-money-bill-wave detail-icon"></i>
-                            <span><strong>Total: R$ {{ pedido.total }}</strong></span>
-                        </div>
-
-                        <a href="{% url 'produtos:registrar_caderno' pedido.id %}"
-                           class="action-btn btn-registrar-caderno">
-                            <i class="fas fa-book"></i>
-                            <span>Registrar no Caderno</span>
-                        </a>
-                    </div>
                 </div>
-                {% empty %}
+
                 <div class="empty-state">
                     <div class="empty-icon">
                         <i class="fas fa-chart-line"></i>
@@ -1070,39 +1064,34 @@
                         Os pedidos finalizados aparecerão aqui automaticamente
                     </div>
                 </div>
-                {% endfor %}
             </div>
         </div>
     </div>
 
+    <div id="notification" class="notification" style="display: none;">
+        <div class="notification-icon">
+            <i class="fas fa-bell"></i>
+        </div>
+        <div class="notification-content">
+            <h4>Novo Pedido Recebido!</h4>
+            <p>Um novo pedido acabou de chegar. Confira na coluna "Novos Pedidos".</p>
+        </div>
+    </div>
+
     <script>
-        let quantidadeAntiga = {{ novos|length }};
+        // Dados iniciais
+        let pedidos = {
+            novos: [1001, 1002, 1003],
+            confirmados: [999, 998],
+            finalizados: [997]
+        };
 
-        function verificarNovosPedidos() {
-            fetch(window.location.href)
-                .then(response => response.text())
-                .then(html => {
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, 'text/html');
-                    const novaQuantidade = doc.querySelectorAll('#coluna-novos .pedido-card').length;
+        function atualizarContadores() {
+            // Atualizar stats cards
+            document.getElementById('count-novos').textContent = pedidos.novos.length;
+            document.getElementById('count-confirmados').textContent = pedidos.confirmados.length;
+            document.getElementById('count-finalizados').textContent = pedidos.finalizados.length;
 
-                    if (novaQuantidade > quantidadeAntiga) {
-                        mostrarNotificacao("🔔 NOVO PEDIDO RECEBIDO!");
-                        quantidadeAntiga = novaQuantidade;
-                        setTimeout(() => {
-                            location.reload();
-                        }, 3000);
-                    } else if (novaQuantidade < quantidadeAntiga) {
-                        quantidadeAntiga = novaQuantidade;
-                        location.reload();
-                    }
-                })
-                .catch(error => {
-                    console.error('Erro ao verificar novos pedidos:', error);
-                });
-        }
-
-        setInterval(verificarNovosPedidos, 15000);
-    </script>
-</body>
-</html>
+            // Atualizar contadores das colunas
+            document.getElementById('count-col-novos').textContent = pedidos.novos.length;
+            document.getElementById('count-col-confirmados').textContent = pedidos.confirm

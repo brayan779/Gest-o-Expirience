@@ -6,6 +6,7 @@ from datetime import timedelta
 from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
 from django.http import JsonResponse
+from django.contrib import messages
 
 
 def home_conveniencia(request):
@@ -182,9 +183,12 @@ def painel_dono(request):
     # Coluna B: Apenas os confirmados
     confirmados = Pedido.objects.filter(status='confirmado').order_by('-data_pedido')
 
+    finalizados = Pedido.objects.filter(status='finalizado').order_by('-data_pedido')
+
     return render(request, 'produtos/painel_dono.html', {
         'novos': novos,
-        'confirmados': confirmados
+        'confirmados': confirmados,
+        'finalizados': finalizados
     })
 
 
@@ -216,28 +220,28 @@ def caderno_gestao(request):
     else:  # 'tudo'
         data_inicial = agora - timedelta(days=3650)
 
-    # Filtra os pedidos finalizados a partir da data definida acima
-    pedidos_base = Pedido.objects.filter(status='finalizado', data_pedido__gte=data_inicial)
-    pedidos_finalizados = pedidos_base.order_by('-data_pedido')
+    # Filtra os pedidos REGISTRADOS a partir da data definida acima
+    pedidos_base = Pedido.objects.filter(status='registrado', data_pedido__gte=data_inicial)
+    pedidos_registrados = pedidos_base.order_by('-data_pedido')
 
     # Cálculos para o Placar (Bloco 1)
-    faturamento_total = pedidos_finalizados.aggregate(Sum('total'))['total__sum'] or 0
-    total_pedidos = pedidos_finalizados.count()
+    faturamento_total = pedidos_registrados.aggregate(Sum('total'))['total__sum'] or 0
+    total_pedidos = pedidos_registrados.count()
     ticket_medio = faturamento_total / total_pedidos if total_pedidos > 0 else 0
 
     # Rankings (Bloco 2) - Filtrando itens apenas dos pedidos selecionados
-    top_produtos = ItemPedido.objects.filter(pedido__in=pedidos_finalizados) \
+    top_produtos = ItemPedido.objects.filter(pedido__in=pedidos_registrados) \
         .values('produto__nome') \
         .annotate(total_vendido=Sum('quantidade')) \
         .order_by('-total_vendido')[:3]
 
-    top_categorias = ItemPedido.objects.filter(pedido__in=pedidos_finalizados) \
+    top_categorias = ItemPedido.objects.filter(pedido__in=pedidos_registrados) \
         .values('produto__categoria__nome') \
         .annotate(faturamento=Sum('preco_unitario')) \
         .order_by('-faturamento')[:3]
 
     contexto = {
-        'pedidos': pedidos_finalizados,
+        'pedidos': pedidos_registrados,
         'faturamento_total': faturamento_total,
         'total_pedidos': total_pedidos,
         'ticket_medio': ticket_medio,
@@ -246,7 +250,6 @@ def caderno_gestao(request):
         'periodo_selecionado': periodo,
     }
     return render(request, 'produtos/caderno.html', contexto)
-
 
 def gerenciar_carrinho_ajax(request, produto_id, acao):
     carrinho = request.session.get('carrinho', {})
@@ -307,4 +310,33 @@ def recusar_pedido(request, pedido_id):
     # Você pode optar por deletar ou apenas mudar o status para 'recusado'
     # Para limpar o painel totalmente, vamos deletar:
     pedido.delete()
+    messages.success(request, f'Pedido #{pedido_id} recusado e removido.')
     return redirect('produtos:painel_dono')
+
+
+def mudar_status(request, pedido_id, novo_status):
+    """Muda o status do pedido sem registrar no caderno"""
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+
+    # Status permitidos: 'confirmado', 'finalizado'
+    if novo_status in ['confirmado', 'finalizado']:
+        pedido.status = novo_status
+        pedido.save()
+        messages.success(request, f'Pedido #{pedido.id} movido para {novo_status}.')
+    else:
+        messages.error(request, 'Status inválido.')
+
+    return redirect('produtos:painel_dono')
+
+
+def registrar_caderno(request, pedido_id):
+    """Registra o pedido finalizado no caderno de gestão"""
+    pedido = get_object_or_404(Pedido, id=pedido_id, status='finalizado')
+
+    # Muda o status para 'registrado' e NÃO deleta o pedido
+    pedido.status = 'registrado'
+    pedido.save()
+
+    messages.success(request, f'Pedido #{pedido.id} registrado no caderno com sucesso!')
+    return redirect('produtos:painel_dono')  # Redireciona para o caderno de gestão
+
