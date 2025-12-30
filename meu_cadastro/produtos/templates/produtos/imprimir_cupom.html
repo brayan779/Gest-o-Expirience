@@ -1,46 +1,905 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-    <title>Cupom Pedido #{{ pedido.id }}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cupom Pedido #{{ pedido.id }} | Conveniência Express</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Courier New', Courier, monospace; width: 300px; margin: 0; padding: 10px; color: #000; }
-        .topo { text-align: center; border-bottom: 1px dashed #000; padding-bottom: 10px; }
-        .info { margin: 10px 0; font-size: 14px; }
-        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
-        th { text-align: left; border-bottom: 1px solid #000; }
-        .total { font-weight: bold; font-size: 18px; border-top: 1px dashed #000; padding-top: 10px; }
-        @media print { .btn-print { display: none; } }
+        /* VARIÁVEIS E RESET */
+        :root {
+            --primary: #FF6B35;
+            --primary-dark: #D85A2B;
+            --primary-light: #FF8E53;
+            --primary-glow: rgba(255, 107, 53, 0.5);
+            --black: #000000;
+            --dark-1: #111111;
+            --dark-2: #222222;
+            --dark-3: #333333;
+            --gray-1: #444444;
+            --gray-2: #666666;
+            --gray-3: #888888;
+            --light: #FFFFFF;
+            --radius: 8px;
+            --radius-sm: 4px;
+        }
+
+        /* ESTILOS PARA TELA */
+        @media screen {
+            body {
+                background: var(--black);
+                color: var(--light);
+                font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+                margin: 0;
+                padding: 20px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+            }
+
+            .screen-container {
+                background: var(--dark-1);
+                width: 100%;
+                max-width: 420px;
+                border-radius: var(--radius);
+                overflow: hidden;
+                box-shadow:
+                    0 0 0 1px var(--primary),
+                    0 20px 60px rgba(255, 107, 53, 0.2);
+                position: relative;
+            }
+
+            .screen-container::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 3px;
+                background: linear-gradient(90deg,
+                    var(--primary) 0%,
+                    var(--primary-light) 50%,
+                    var(--primary) 100%);
+            }
+
+            /* CABEÇALHO COM TÍTULO */
+            .header-section {
+                background: linear-gradient(135deg, var(--dark-2), var(--dark-1));
+                padding: 20px 20px 15px 20px;
+                text-align: center;
+                border-bottom: 1px solid var(--dark-3);
+            }
+
+            .header-title {
+                color: var(--primary);
+                font-size: 22px;
+                font-weight: 700;
+                margin: 0 0 8px 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                letter-spacing: 0.5px;
+            }
+
+            .header-subtitle {
+                color: var(--gray-3);
+                font-size: 13px;
+                margin: 0;
+            }
+
+            /* SEÇÃO DE BOTÕES PEQUENOS - AGORA COM TAMANHO IGUAL */
+            .buttons-section {
+                background: var(--dark-2);
+                padding: 12px 20px;
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+                border-bottom: 1px solid var(--dark-3);
+                align-items: center;
+            }
+
+            .btn {
+                background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+                color: var(--light);
+                border: none;
+                padding: 8px 15px;
+                border-radius: var(--radius-sm);
+                cursor: pointer;
+                font-size: 12px;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                transition: all 0.3s ease;
+                border: 1px solid rgba(255, 107, 53, 0.3);
+                min-width: 80px;
+                justify-content: center;
+                height: 36px;
+                text-decoration: none;
+                box-sizing: border-box;
+            }
+
+            .btn:hover {
+                background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+            }
+
+            .btn:active {
+                transform: translateY(0);
+            }
+
+            .btn-copiar {
+                background: linear-gradient(135deg, var(--dark-3), var(--gray-1));
+                border: 1px solid var(--gray-1);
+            }
+
+            .btn-copiar:hover {
+                background: linear-gradient(135deg, var(--gray-1), var(--dark-3));
+                border-color: var(--primary);
+            }
+
+            .btn-voltar {
+                background: linear-gradient(135deg, #2A6F97, #1A4D6E);
+                border: 1px solid #1A4D6E;
+                /* GARANTINDO MESMO TAMANHO DOS OUTROS BOTÕES */
+                height: 36px !important;
+                line-height: 20px !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+            }
+
+            .btn-voltar:hover {
+                background: linear-gradient(135deg, #1A4D6E, #2A6F97);
+                border-color: #4DA1C6;
+                box-shadow: 0 5px 15px rgba(42, 111, 151, 0.3);
+            }
+
+            /* NOTA DE VISUALIZAÇÃO */
+            .preview-note {
+                text-align: center;
+                padding: 10px 20px;
+                background: rgba(255, 107, 53, 0.1);
+                color: var(--primary);
+                font-size: 12px;
+                border-bottom: 1px solid var(--dark-3);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+            }
+
+            /* ANIMAÇÃO DE GLOW */
+            @keyframes glow {
+                0%, 100% {
+                    box-shadow:
+                        0 0 0 1px var(--primary),
+                        0 20px 60px rgba(255, 107, 53, 0.2);
+                }
+                50% {
+                    box-shadow:
+                        0 0 0 2px var(--primary),
+                        0 25px 80px rgba(255, 107, 53, 0.4);
+                }
+            }
+
+            .printing {
+                animation: glow 1.5s ease-in-out;
+            }
+        }
+
+        /* ESTILOS PARA IMPRESSÃO */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                font-family: 'Courier New', Courier, monospace !important;
+                width: 100% !important;
+                display: block !important;
+                min-height: auto !important;
+            }
+
+            .screen-container {
+                max-width: 100% !important;
+                width: 100% !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                transform: none !important;
+                background: white !important;
+                padding: 10px !important;
+            }
+
+            .header-section,
+            .buttons-section,
+            .preview-note {
+                display: none !important;
+            }
+
+            /* GARANTIR QUE TUDO IMPRIMA EM PRETO */
+            * {
+                color: black !important;
+                background: white !important;
+                border-color: black !important;
+            }
+
+            /* TAMANHO OTIMIZADO PARA IMPRESSÃO */
+            body {
+                width: 300px;
+                margin: 0 auto;
+                padding: 10px;
+            }
+        }
+
+        /* ESTILOS DO CUPOM (COMUNS PARA TELA E IMPRESSÃO) */
+        .cupom {
+            padding: 25px;
+            background: var(--black);
+            color: var(--light);
+            font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
+        }
+
+        @media print {
+            .cupom {
+                background: white !important;
+                color: black !important;
+                padding: 10px !important;
+                font-size: 12px !important;
+                width: 100%;
+                max-width: 300px;
+                margin: 0 auto;
+            }
+        }
+
+        /* CABEÇALHO DO CUPOM */
+        .cupom-header {
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed var(--primary);
+            margin-bottom: 15px;
+        }
+
+        @media print {
+            .cupom-header {
+                border-bottom: 1px dashed #000 !important;
+                padding-bottom: 5px !important;
+                margin-bottom: 10px !important;
+            }
+        }
+
+        .logo-cupom {
+            font-size: 20px;
+            font-weight: 900;
+            margin-bottom: 5px;
+            color: var(--primary);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        @media print {
+            .logo-cupom {
+                color: black !important;
+                font-size: 18px !important;
+                margin-bottom: 3px !important;
+            }
+        }
+
+        .logo-subtitle {
+            font-size: 11px;
+            color: var(--gray-3);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        @media print {
+            .logo-subtitle {
+                display: none !important;
+            }
+        }
+
+        .pedido-numero {
+            background: var(--primary);
+            color: var(--black);
+            padding: 8px 15px;
+            border-radius: var(--radius-sm);
+            font-size: 16px;
+            font-weight: 900;
+            display: inline-block;
+            margin: 10px 0;
+            letter-spacing: 1px;
+        }
+
+        @media print {
+            .pedido-numero {
+                background: black !important;
+                color: white !important;
+                font-size: 14px !important;
+                padding: 5px 10px !important;
+                margin: 5px 0 !important;
+            }
+        }
+
+        .data-hora {
+            font-size: 12px;
+            color: var(--gray-3);
+            margin-top: 5px;
+        }
+
+        @media print {
+            .data-hora {
+                font-size: 11px !important;
+                margin-top: 3px !important;
+            }
+        }
+
+        /* STATUS DO PEDIDO */
+        .status-pedido {
+            display: none;
+        }
+
+        @media screen {
+            .status-pedido {
+                display: inline-block;
+                background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+                color: var(--black);
+                padding: 6px 15px;
+                border-radius: 20px;
+                font-size: 11px;
+                font-weight: 900;
+                margin-bottom: 10px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                border: 1px solid var(--primary-light);
+            }
+        }
+
+        /* INFORMAÇÕES DO CLIENTE */
+        .cliente-info {
+            margin: 10px 0;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        @media screen {
+            .cliente-info {
+                background: rgba(255, 107, 53, 0.1);
+                padding: 15px;
+                border-radius: var(--radius-sm);
+                margin-bottom: 15px;
+                border-left: 3px solid var(--primary);
+            }
+        }
+
+        @media print {
+            .cliente-info {
+                background: white !important;
+                border-left: none !important;
+                padding: 0 !important;
+                margin: 10px 0 !important;
+                font-size: 12px !important;
+            }
+        }
+
+        .info-item {
+            margin-bottom: 5px;
+        }
+
+        @media print {
+            .info-item {
+                margin-bottom: 3px !important;
+            }
+        }
+
+        /* TABELA DE ITENS */
+        .itens-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 13px;
+        }
+
+        @media print {
+            .itens-table {
+                margin: 5px 0 !important;
+                font-size: 11px !important;
+            }
+        }
+
+        .itens-table thead {
+            border-bottom: 1px solid var(--primary);
+        }
+
+        @media print {
+            .itens-table thead {
+                border-bottom: 1px solid #000 !important;
+            }
+        }
+
+        .itens-table th {
+            text-align: left;
+            padding: 8px 5px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 12px;
+            color: var(--primary);
+        }
+
+        @media print {
+            .itens-table th {
+                color: black !important;
+                padding: 6px 5px !important;
+                font-size: 11px !important;
+            }
+        }
+
+        .itens-table td {
+            padding: 6px 5px;
+            border-bottom: 1px dashed var(--gray-1);
+        }
+
+        @media print {
+            .itens-table td {
+                border-bottom: 1px dashed #ccc !important;
+                padding: 4px 5px !important;
+            }
+        }
+
+        .itens-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .col-qtd {
+            width: 15%;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .col-item {
+            width: 55%;
+        }
+
+        .col-preco {
+            width: 30%;
+            text-align: right;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+
+        /* TOTAL */
+        .total-section {
+            border-top: 1px dashed var(--primary);
+            padding-top: 10px;
+            margin-top: 15px;
+            text-align: right;
+        }
+
+        @media print {
+            .total-section {
+                border-top: 1px dashed #000 !important;
+                padding-top: 8px !important;
+                margin-top: 10px !important;
+            }
+        }
+
+        .total-label {
+            font-size: 14px;
+            color: var(--gray-3);
+            margin-bottom: 3px;
+        }
+
+        @media print {
+            .total-label {
+                font-size: 12px !important;
+            }
+        }
+
+        .total-valor {
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--primary);
+            font-family: 'Courier New', monospace;
+        }
+
+        @media print {
+            .total-valor {
+                color: black !important;
+                font-size: 18px !important;
+            }
+        }
+
+        /* RODAPÉ */
+        .cupom-footer {
+            text-align: center;
+            padding-top: 15px;
+            margin-top: 15px;
+            border-top: 1px dashed var(--gray-1);
+            font-size: 11px;
+            color: var(--gray-3);
+        }
+
+        @media print {
+            .cupom-footer {
+                border-top: 1px dashed #ccc !important;
+                padding-top: 10px !important;
+                margin-top: 10px !important;
+                font-size: 10px !important;
+            }
+        }
+
+        .thank-you {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 12px;
+            color: var(--primary);
+            text-transform: uppercase;
+        }
+
+        @media print {
+            .thank-you {
+                color: black !important;
+                font-size: 11px !important;
+                margin-bottom: 5px !important;
+            }
+        }
+
+        .contact-info {
+            font-size: 10px;
+            line-height: 1.4;
+            margin-bottom: 10px;
+            color: var(--gray-2);
+        }
+
+        @media print {
+            .contact-info {
+                font-size: 9px !important;
+                margin-bottom: 5px !important;
+            }
+        }
+
+        .qr-code-placeholder {
+            display: none;
+        }
+
+        @media screen {
+            .qr-code-placeholder {
+                width: 90px;
+                height: 90px;
+                margin: 15px auto;
+                background: linear-gradient(45deg, var(--primary), transparent);
+                border: 2px dashed var(--primary);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--primary);
+                font-size: 10px;
+            }
+        }
+
+        .footer-note {
+            font-size: 9px;
+            margin-top: 10px;
+            color: var(--gray-3);
+        }
+
+        @media print {
+            .footer-note {
+                display: none !important;
+            }
+        }
+
+        /* ELEMENTOS QUE APARECEM APENAS NA IMPRESSÃO */
+        @media print {
+            .print-only {
+                display: block !important;
+            }
+        }
+
+        .print-only {
+            display: none;
+        }
+
+        /* RESPONSIVIDADE */
+        @media (max-width: 600px) {
+            .screen-container {
+                margin: 10px;
+            }
+
+            .cupom {
+                padding: 15px;
+            }
+
+            .buttons-section {
+                padding: 10px 15px;
+            }
+
+            .btn {
+                padding: 6px 12px;
+                font-size: 11px;
+                min-width: 70px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .cupom {
+                padding: 10px;
+            }
+
+            .logo-cupom {
+                font-size: 18px;
+            }
+
+            .pedido-numero {
+                font-size: 14px;
+                padding: 6px 12px;
+            }
+
+            .buttons-section {
+                flex-wrap: wrap;
+                justify-content: space-around;
+            }
+
+            .btn {
+                flex: 1;
+                min-width: 100px;
+                margin: 2px;
+            }
+        }
+
+        /* IMPRESSÃO AUTOMÁTICA */
+        @media print {
+            @page {
+                margin: 0;
+                size: 80mm auto;
+            }
+
+            body {
+                width: 80mm;
+                max-width: 80mm;
+                min-width: 80mm;
+            }
+        }
     </style>
+
+    <script>
+        // FUNÇÕES JAVASCRIPT UNIFICADAS
+        document.addEventListener('DOMContentLoaded', function() {
+            // Botão Imprimir
+            const btnPrint = document.querySelector('.btn-print');
+            if (btnPrint) {
+                btnPrint.addEventListener('click', function() {
+                    window.print();
+                });
+            }
+
+            // Botão Copiar
+            const btnCopiar = document.querySelector('.btn-copiar');
+            if (btnCopiar) {
+                btnCopiar.addEventListener('click', function() {
+                    // Cria texto do cupom para copiar
+                    const cupomText = gerarTextoParaCopiar();
+                    navigator.clipboard.writeText(cupomText)
+                        .then(() => {
+                            // Feedback visual
+                            const originalHTML = btnCopiar.innerHTML;
+                            btnCopiar.innerHTML = '<i class="fas fa-check"></i><span>Copiado!</span>';
+                            btnCopiar.style.background = 'linear-gradient(135deg, #28a745, #4cd964)';
+
+                            setTimeout(() => {
+                                btnCopiar.innerHTML = originalHTML;
+                                btnCopiar.style.background = '';
+                            }, 2000);
+                        })
+                        .catch(err => {
+                            console.error('Erro ao copiar: ', err);
+                            // Fallback para navegadores antigos
+                            const textArea = document.createElement('textarea');
+                            textArea.value = cupomText;
+                            document.body.appendChild(textArea);
+                            textArea.select();
+                            document.execCommand('copy');
+                            document.body.removeChild(textArea);
+
+                            // Feedback visual mesmo com fallback
+                            const originalHTML = btnCopiar.innerHTML;
+                            btnCopiar.innerHTML = '<i class="fas fa-check"></i><span>Copiado!</span>';
+                            btnCopiar.style.background = 'linear-gradient(135deg, #28a745, #4cd964)';
+
+                            setTimeout(() => {
+                                btnCopiar.innerHTML = originalHTML;
+                                btnCopiar.style.background = '';
+                            }, 2000);
+                        });
+                });
+            }
+
+            // Impressão automática se configurado
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('autoPrint') === 'true') {
+                setTimeout(() => {
+                    window.print();
+                }, 500);
+            }
+
+            // Função para gerar texto do cupom para cópia
+            function gerarTextoParaCopiar() {
+                let texto = "=".repeat(40) + "\n";
+                texto += "CUPOM DE PEDIDO - CONVENIÊNCIA EXPRESS\n";
+                texto += "=".repeat(40) + "\n\n";
+
+                // Informações do pedido
+                const pedidoNum = document.querySelector('.pedido-numero')?.textContent?.replace('#', '') || '{{ pedido.id }}';
+                const dataHora = document.querySelector('.data-hora')?.textContent || '{{ pedido.data_pedido|date:"d/m/Y H:i" }}';
+
+                texto += `PEDIDO: #${pedidoNum}\n`;
+                texto += `DATA: ${dataHora}\n\n`;
+
+                // Cliente
+                texto += "CLIENTE:\n";
+                const clienteNome = '{{ pedido.nome_cliente }}' || 'Não informado';
+                const clienteTel = '{{ pedido.telefone }}' || 'Não informado';
+                const clienteEnd = '{{ pedido.endereco }}' || 'Não informado';
+
+                texto += `Nome: ${clienteNome}\n`;
+                texto += `Telefone: ${clienteTel}\n`;
+                texto += `Endereço: ${clienteEnd}\n\n`;
+
+                texto += "ITENS DO PEDIDO:\n";
+                texto += "-".repeat(40) + "\n";
+
+                // Itens da tabela
+                const linhas = document.querySelectorAll('.itens-table tbody tr');
+                if (linhas.length > 0) {
+                    linhas.forEach(row => {
+                        const cols = row.querySelectorAll('td');
+                        if (cols.length >= 3) {
+                            const qtd = cols[0].textContent.padEnd(6);
+                            const item = cols[1].textContent.padEnd(25);
+                            const preco = cols[2].textContent;
+                            texto += `${qtd} ${item} ${preco}\n`;
+                        }
+                    });
+                } else {
+                    // Fallback para dados do template
+                    texto += "Itens não disponíveis para visualização\n";
+                }
+
+                texto += "\n" + "=".repeat(40) + "\n";
+                const total = document.querySelector('.total-valor')?.textContent || 'R$ {{ pedido.total }}';
+                texto += `TOTAL: ${total}\n\n`;
+                texto += "OBRIGADO PELA PREFERÊNCIA!\n";
+                texto += "=".repeat(40);
+
+                return texto;
+            }
+        });
+    </script>
 </head>
-<body onload="window.print();">
-    <div class="topo">
-        <h2>CONVENIÊNCIA EXPRESS</h2>
-        <p>Pedido #{{ pedido.id }} - {{ pedido.data_pedido|date:"d/m/Y H:i" }}</p>
+<body>
+    <div class="screen-container">
+        <!-- CABEÇALHO COM TÍTULO (APENAS TELA) -->
+        <div class="header-section">
+            <h1 class="header-title">
+                <i class="fas fa-receipt" style="color: var(--primary);"></i>
+                Cupom do Pedido
+            </h1>
+            <p class="header-subtitle">#{{ pedido.id }} - {{ pedido.data_pedido|date:"d/m/Y H:i" }}</p>
+        </div>
+
+        <!-- SEÇÃO DE BOTÕES (APENAS TELA) -->
+        <div class="buttons-section">
+            <button class="btn btn-copiar">
+                <i class="fas fa-copy"></i>
+                <span>Copiar</span>
+            </button>
+
+            <!-- BOTÃO VOLTAR AGORA TEM MESMO TAMANHO DOS OUTROS -->
+            <a href="{% url 'produtos:painel_dono' %}" class="btn btn-copiar">
+                <i class="fas fa-arrow-left"></i>
+                <span>Voltar</span>
+            </a>
+
+            <button class="btn btn-print">
+                <i class="fas fa-print"></i>
+                <span>Imprimir</span>
+            </button>
+        </div>
+
+        <!-- NOTA DE VISUALIZAÇÃO (APENAS TELA) -->
+        <div class="preview-note">
+            <i class="fas fa-info-circle" style="color: var(--primary);"></i>
+            <span>Visualização prévia - Ctrl+P para imprimir</span>
+        </div>
+
+        <!-- CUPOM (VISÍVEL NA TELA E NA IMPRESSÃO) -->
+        <div class="cupom">
+            <!-- CABEÇALHO -->
+            <div class="cupom-header">
+                <div class="logo-cupom">CONVENIÊNCIA EXPRESS</div>
+                <div class="logo-subtitle">DELIVERY PREMIUM</div>
+
+                <!-- Status (apenas tela) -->
+                <div class="status-pedido">
+                    <i class="fas fa-bolt"></i> PEDIDO CONFIRMADO
+                </div>
+
+                <div class="pedido-numero">#{{ pedido.id }}</div>
+                <div class="data-hora">{{ pedido.data_pedido|date:"d/m/Y H:i" }}</div>
+            </div>
+
+            <!-- INFORMAÇÕES DO CLIENTE -->
+            <div class="cliente-info">
+                <div class="info-item">
+                    <strong>Cliente:</strong> {{ pedido.nome_cliente }}
+                </div>
+                <div class="info-item">
+                    <strong>Telefone:</strong> {{ pedido.telefone }}
+                </div>
+                <div class="info-item">
+                    <strong>Endereço:</strong> {{ pedido.endereco }}
+                </div>
+                <div class="info-item print-only">
+                    <strong>Entrega:</strong> 30-45 minutos
+                </div>
+            </div>
+
+            <!-- TABELA DE ITENS -->
+            <table class="itens-table">
+                <thead>
+                    <tr>
+                        <th class="col-qtd">Qtd</th>
+                        <th class="col-item">Item</th>
+                        <th class="col-preco">Preço</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in pedido.itens.all %}
+                    <tr>
+                        <td class="col-qtd">{{ item.quantidade }}x</td>
+                        <td class="col-item">{{ item.produto.nome }}</td>
+                        <td class="col-preco">R$ {{ item.total_item }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- TOTAL -->
+            <div class="total-section">
+                <div class="total-label">TOTAL</div>
+                <div class="total-valor">R$ {{ pedido.total }}</div>
+            </div>
+
+            <!-- RODAPÉ -->
+            <div class="cupom-footer">
+                <div class="thank-you">--- OBRIGADO PELA PREFERÊNCIA ---</div>
+
+                <!-- Informações de contato (apenas tela) -->
+                <div class="contact-info">
+                    <strong><i class="fas fa-phone"></i> WHATSAPP:</strong> (11) 99999-9999<br>
+                    <strong><i class="fas fa-clock"></i> HORÁRIO:</strong> 08:00 ÀS 23:00
+                </div>
+
+                <!-- QR Code (apenas tela) -->
+                <div class="qr-code-placeholder">
+                    <div style="text-align: center;">
+                        <i class="fas fa-qrcode fa-2x"></i><br>
+                        <div style="margin-top: 5px;">
+                            <span style="font-weight: bold;">PEDIDO</span><br>
+                            <span>#{{ pedido.id }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nota do rodapé (apenas tela) -->
+                <div class="footer-note">
+                    <i class="fas fa-receipt"></i> CUPOM NÃO FISCAL • VIA DO ESTABELECIMENTO
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="info">
-        <strong>Cliente:</strong> {{ pedido.nome_cliente }}<br>
-        <strong>Telefone:</strong> {{ pedido.telefone }}<br>
-        <strong>Endereço:</strong> {{ pedido.endereco }}
-    </div>
-    <table>
-        <thead>
-            <tr>
-                <th>Qtd</th>
-                <th>Item</th>
-                <th>Preço</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in pedido.itens.all %}
-            <tr>
-                <td>{{ item.quantidade }}x</td>
-                <td>{{ item.produto.nome }}</td>
-                <td>R$ {{ item.total_item }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <div class="total">TOTAL: R$ {{ pedido.total }}</div>
-    <p style="text-align: center; margin-top: 20px;">--- OBRIGADO PELA PREFERÊNCIA ---</p>
 </body>
 </html>
