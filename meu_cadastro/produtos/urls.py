@@ -21,6 +21,12 @@ urlpatterns = [
     path('pedido/<int:pedido_id>/registrar/', views.registrar_caderno, name='registrar_caderno'),
     path('pedido/<int:pedido_id>/recusar/', views.recusar_pedido, name='recusar_pedido'),
     path('pedido/<int:pedido_id>/imprimir/', views.imprimir_pedido, name='imprimir_pedido'),
+    path('login/', auth_views.LoginView.as_view(
+        template_name='produtos/login.html',
+        redirect_authenticated_user=True
+    ), name='login'),
+
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 
 
 
