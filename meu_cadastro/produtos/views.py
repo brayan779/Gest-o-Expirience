@@ -441,3 +441,12 @@ def registrar_caderno(request, pedido_id):
     messages.success(request, f'Pedido #{pedido.id} registrado no caderno com sucesso!')
     return redirect('produtos:painel_dono')  # Redireciona para o caderno de gestão
 
+def pedido_sucesso(request, pedido_id):
+    # Buscar pedido do banco
+    pedido = {
+        'id': pedido_id,
+        'nome_cliente': 'Nome do Cliente',  # Pegue do banco
+        'telefone': '42998484537',  # Pegue do banco
+        'total': '15.50'  # Calcule do banco
+    }
+    return render(request, 'pedido_sucesso.html', {'pedido': pedido})
