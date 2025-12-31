@@ -791,27 +791,36 @@
 let urlAgendada = "";
 
 function verificarSabores(event, produtoId, produtoNome, listaSabores) {
-    const baseUrl = `{% url 'produtos:carrinho_ajax' 0 'adicionar' %}`.replace('0', produtoId);
+    // Previne comportamento padrão e propagação
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
+    // CORREÇÃO AQUI: Use o ID do produto, não o slug
+    const baseUrl = `{% url 'produtos:carrinho_ajax' 999999 'adicionar' %}`.replace('999999', produtoId);
 
     // Se o produto tiver sabores, abre a modal
-    if (listaSabores.length > 0) {
+    if (listaSabores && listaSabores.length > 0 && listaSabores[0] !== '') {
         urlAgendada = baseUrl; // Guarda a URL base
         document.getElementById('modal-produto-nome').innerText = produtoNome;
         const container = document.getElementById('lista-sabores');
         container.innerHTML = ""; // Limpa sabores anteriores
 
         listaSabores.forEach(sabor => {
-            const btn = document.createElement('button');
-            btn.innerText = sabor;
-            btn.style = "background: rgba(255,102,0,0.1); border: 1px solid #ff6600; color: #fff; padding: 12px; border-radius: 8px; cursor: pointer; text-align: left; font-weight: 600; transition: 0.3s";
-            btn.onclick = () => confirmarSabor(sabor); // Quando clicar no sabor, confirma
-            container.appendChild(btn);
+            if (sabor && sabor.trim() !== '') {
+                const btn = document.createElement('button');
+                btn.innerText = sabor;
+                btn.style = "background: rgba(255,102,0,0.1); border: 1px solid #ff6600; color: #fff; padding: 12px; border-radius: 8px; cursor: pointer; text-align: left; font-weight: 600; transition: 0.3s";
+                btn.onclick = () => confirmarSabor(sabor); // Quando clicar no sabor, confirma
+                container.appendChild(btn);
+            }
         });
 
         document.getElementById('modal-sabores').style.display = 'flex';
     } else {
         // Se NÃO tiver sabor, chama o seu atualizarCarrinho original direto
-        atualizarCarrinho(baseUrl);
+        atualizarCarrinho(baseUrl, event);
     }
 }
 
@@ -827,9 +836,9 @@ function fecharModalSabores() {
 }
 
 // SUA FUNÇÃO ORIGINAL (AJUSTADA)
-function atualizarCarrinho(urlDoDjango) {
+function atualizarCarrinho(urlDoDjango, event) {
     // Se o evento existir (clique direto no +), pegamos o botão
-    const botaoClicado = (typeof event !== 'undefined' && event.currentTarget.classList.contains('btn-mais')) ? event.currentTarget : null;
+    const botaoClicado = (event && event.currentTarget && event.currentTarget.classList.contains('btn-mais')) ? event.currentTarget : null;
 
     fetch(urlDoDjango, {
         method: 'GET',
@@ -850,9 +859,13 @@ function atualizarCarrinho(urlDoDjango) {
                 setTimeout(() => botaoClicado.classList.remove('clicado'), 300);
             }
         }
+    })
+    .catch(error => {
+        console.error('Erro ao atualizar carrinho:', error);
     });
 }
 </script>
+
 <div id="modal-sabores" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; backdrop-filter: blur(8px); align-items: center; justify-content: center;">
     <div style="background: #111; border: 1px solid #ff6600; width: 90%; max-width: 400px; padding: 25px; border-radius: 15px; box-shadow: 0 0 30px rgba(255,102,0,0.2);">
         <h2 id="modal-titulo" style="color: #ff6600; margin-top: 0; font-size: 1.4rem;">Escolha o Sabor</h2>
