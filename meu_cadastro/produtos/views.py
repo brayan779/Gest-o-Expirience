@@ -101,15 +101,20 @@ def adicionar_carrinho(request, produto_id):
     id_str = str(produto_id)
 
     if id_str in carrinho:
-        # Acessa a chave 'quantidade' corretamente para evitar o erro de dict + int
         carrinho[id_str]['quantidade'] += 1
     else:
         produto = get_object_or_404(Produto, id=produto_id)
         carrinho[id_str] = {
+            'produto_id': id_str,  # <--- ADICIONE ESTA LINHA
             'nome': produto.nome,
             'preco': str(produto.preco),
-            'quantidade': 1
+            'quantidade': 1,
+            'sabor': ''            # <--- ADICIONE ISSO TAMBÉM (mesmo que vazio)
         }
+
+    request.session['carrinho'] = carrinho
+    request.session.modified = True
+    return redirect('produtos:home')
 
     request.session['carrinho'] = carrinho
     request.session.modified = True
@@ -164,6 +169,7 @@ def finalizar_pedido(request):
                 produto=produto,
                 quantidade=qtd,
                 preco_unitario=preco,
+                custo_unitario=produto.custo,  # SALVA O CUSTO ATUAL
                 sabor_escolhido=sabor  # Salva o sabor no banco
             )
 
@@ -205,99 +211,63 @@ def imprimir_pedido(request, pedido_id):
 
 @login_required
 def caderno_gestao(request):
-    # Captura o filtro da URL (o padrão será 'hoje' se nada for enviado)
     periodo = request.GET.get('periodo', 'hoje')
     agora = timezone.now()
+    data_especifica = None
 
-    # Define a data de início com base no filtro selecionado
+    # --- 1. Lógica de Filtro de Datas (Exatamente como a sua original) ---
     if periodo == 'hoje':
         data_inicial = agora.replace(hour=0, minute=0, second=0, microsecond=0)
-        # Para hoje, queremos do início do dia até agora
-        pedidos_base = Pedido.objects.filter(
-            status='registrado',
-            data_pedido__gte=data_inicial
-        )
-
+        pedidos_base = Pedido.objects.filter(status='registrado', data_pedido__gte=data_inicial)
     elif periodo == 'semana':
         data_inicial = agora - timedelta(days=7)
-        pedidos_base = Pedido.objects.filter(
-            status='registrado',
-            data_pedido__gte=data_inicial
-        )
-
+        pedidos_base = Pedido.objects.filter(status='registrado', data_pedido__gte=data_inicial)
     elif periodo == 'mes':
         data_inicial = agora - timedelta(days=30)
-        pedidos_base = Pedido.objects.filter(
-            status='registrado',
-            data_pedido__gte=data_inicial
-        )
-
+        pedidos_base = Pedido.objects.filter(status='registrado', data_pedido__gte=data_inicial)
     elif periodo == 'ano':
         data_inicial = agora - timedelta(days=365)
-        pedidos_base = Pedido.objects.filter(
-            status='registrado',
-            data_pedido__gte=data_inicial
-        )
-
+        pedidos_base = Pedido.objects.filter(status='registrado', data_pedido__gte=data_inicial)
     elif periodo == 'data':
-        # ✅ CORREÇÃO: Filtro por data específica
         data_str = request.GET.get('data', '')
         if data_str:
             try:
                 from datetime import datetime
                 data_obj = datetime.strptime(data_str, '%Y-%m-%d').date()
-
-                # Criar range do dia completo
-                inicio_dia = timezone.make_aware(
-                    datetime.combine(data_obj, datetime.min.time())
-                )
-                fim_dia = timezone.make_aware(
-                    datetime.combine(data_obj, datetime.max.time())
-                )
-
-                # Filtrar pedidos apenas deste dia
-                pedidos_base = Pedido.objects.filter(
-                    status='registrado',
-                    data_pedido__range=[inicio_dia, fim_dia]
-                )
-
-                # Guardar a data para o template
+                inicio_dia = timezone.make_aware(datetime.combine(data_obj, datetime.min.time()))
+                fim_dia = timezone.make_aware(datetime.combine(data_obj, datetime.max.time()))
+                pedidos_base = Pedido.objects.filter(status='registrado', data_pedido__range=[inicio_dia, fim_dia])
                 data_especifica = data_obj
-
-            except (ValueError, TypeError):
-                # Se data inválida, volta para hoje
-                data_inicial = agora.replace(hour=0, minute=0, second=0, microsecond=0)
-                pedidos_base = Pedido.objects.filter(
-                    status='registrado',
-                    data_pedido__gte=data_inicial
-                )
-                data_especifica = None
+                data_inicial = inicio_dia
+            except:
+                data_inicial = agora.replace(hour=0, minute=0)
+                pedidos_base = Pedido.objects.filter(status='registrado', data_pedido__gte=data_inicial)
         else:
-            # Se não tem data, volta para hoje
-            data_inicial = agora.replace(hour=0, minute=0, second=0, microsecond=0)
-            pedidos_base = Pedido.objects.filter(
-                status='registrado',
-                data_pedido__gte=data_inicial
-            )
-            data_especifica = None
-
+            data_inicial = agora.replace(hour=0, minute=0)
+            pedidos_base = Pedido.objects.filter(status='registrado', data_pedido__gte=data_inicial)
     else:  # 'tudo'
         data_inicial = agora - timedelta(days=3650)
-        pedidos_base = Pedido.objects.filter(
-            status='registrado',
-            data_pedido__gte=data_inicial
-        )
+        pedidos_base = Pedido.objects.filter(status='registrado', data_pedido__gte=data_inicial)
 
-    pedidos_registrados = pedidos_base.order_by('-data_pedido')
+    # --- 2. Busca Otimizada ---
+    pedidos_registrados = pedidos_base.prefetch_related('itens__produto').order_by('-data_pedido')
 
-    # Cálculos para o Placar (Bloco 1)
-    faturamento_total = pedidos_registrados.aggregate(Sum('total'))['total__sum'] or 0
+    # --- 3. Cálculos de Faturamento, Lucro e Placar ---
+    faturamento_total = 0
+    lucro_total = 0
     total_pedidos = pedidos_registrados.count()
+
+    for p in pedidos_registrados:
+        faturamento_total += p.total
+        # Calcula o lucro somando os itens (precisa da função lucro_item no Model)
+        lucro_do_pedido = sum(item.lucro_item() for item in p.itens.all())
+        p.lucro_calculado = lucro_do_pedido
+        lucro_total += lucro_do_pedido
+
     ticket_medio = faturamento_total / total_pedidos if total_pedidos > 0 else 0
 
-    # ✅ CÁLCULOS ADICIONAIS PARA O TEMPLATE UNIFICADO
-    # 1. Pedidos por dia
-    if periodo == 'hoje':
+    # --- 4. Estatísticas Adicionais (O que estava faltando) ---
+    if periodo in ['hoje', 'data']:
         dias_no_periodo = 1
     elif periodo == 'semana':
         dias_no_periodo = 7
@@ -305,20 +275,12 @@ def caderno_gestao(request):
         dias_no_periodo = 30
     elif periodo == 'ano':
         dias_no_periodo = 365
-    elif periodo == 'data':
-        dias_no_periodo = 1  # Data específica é sempre 1 dia
-    else:  # 'tudo'
+    else:
         dias_no_periodo = max((agora - data_inicial).days, 1)
 
     pedidos_por_dia = total_pedidos / dias_no_periodo if dias_no_periodo > 0 else total_pedidos
 
-    # 2. Taxa de conclusão (simplificada)
-    taxa_conclusao = 100.0
-
-    # 3. Crescimento (simplificado para agora)
-    crescimento = 0.0
-
-    # Rankings (Bloco 2) - Filtrando itens apenas dos pedidos selecionados
+    # --- 5. Rankings ---
     top_produtos = ItemPedido.objects.filter(pedido__in=pedidos_registrados) \
         .values('produto__nome') \
         .annotate(total_vendido=Sum('quantidade')) \
@@ -332,24 +294,18 @@ def caderno_gestao(request):
     contexto = {
         'pedidos': pedidos_registrados,
         'faturamento_total': faturamento_total,
+        'lucro_total': lucro_total,
         'total_pedidos': total_pedidos,
         'ticket_medio': ticket_medio,
+        'pedidos_por_dia': round(pedidos_por_dia, 1),
         'top_produtos': top_produtos,
         'top_categorias': top_categorias,
         'periodo_selecionado': periodo,
-        'pedidos_por_dia': round(pedidos_por_dia, 1),
-        'crescimento': round(crescimento, 1),
-        'taxa_conclusao': taxa_conclusao,
-        'data_especifica': data_especifica if periodo == 'data' else None,
+        'data_especifica': data_especifica,
         'hoje': agora.date(),
+        'taxa_conclusao': 100.0,
+        'crescimento': 0.0,
     }
-
-    # DEBUG no terminal
-    print(
-        f"DEBUG Caderno: Período={periodo}, Data={data_especifica if periodo == 'data' else 'N/A'}, Pedidos={total_pedidos}, Faturamento=R${faturamento_total}")
-
-    if periodo == 'data' and data_especifica:
-        print(f"DEBUG Filtro Data: data_pedido__range=[{inicio_dia}, {fim_dia}]")
 
     return render(request, 'produtos/caderno.html', contexto)
 def gerenciar_carrinho_ajax(request, produto_id, acao):

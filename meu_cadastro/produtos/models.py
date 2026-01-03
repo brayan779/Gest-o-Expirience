@@ -55,6 +55,9 @@ class Produto(models.Model):
     disponivel = models.BooleanField(default=True)
     ordem = models.IntegerField(default=0, help_text="Ordem de exibição")
     sabores = models.ManyToManyField(Sabor, blank=True, related_name='produtos')
+    preco = models.DecimalField(max_digits=7, decimal_places=2, verbose_name="Preço de Venda")
+    custo = models.DecimalField(max_digits=7, decimal_places=2, default=0,
+                                help_text="Quanto você pagou pelo produto")  # NOVO CAMPO
 
     def __str__(self):
         return self.nome
@@ -115,6 +118,11 @@ class ItemPedido(models.Model):
     quantidade = models.PositiveIntegerField(default=1)
     preco_unitario = models.DecimalField(max_digits=7, decimal_places=2)
     sabor_escolhido = models.CharField(max_length=50, null=True, blank=True)
+    preco_unitario = models.DecimalField(max_digits=7, decimal_places=2)
+    custo_unitario = models.DecimalField(max_digits=7, decimal_places=2, default=0)  # NOVO CAMPO
+
+    def lucro_item(self):
+        return (self.preco_unitario - self.custo_unitario) * self.quantidade  # CÁLCULO DO LUCRO
 
     def total_item(self):
         return self.quantidade * self.preco_unitario
