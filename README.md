@@ -32,3 +32,6 @@ O **Conveniência Express** é uma solução Full-Stack desenvolvida para facili
 
 ## 📈 Diferenciais de Gestão
 Este sistema foi projetado para resolver a dor do pequeno empresário. Ao clicar em **"Registrar no Caderno"**, o sistema realiza o fechamento automático da venda, alimentando os gráficos de performance em tempo real.
+<img width="440" height="618" alt="Captura de tela 2026-01-04 130250" src="https://github.com/user-attachments/assets/a5652d24-5153-4408-b503-069990333512" />
+
+
