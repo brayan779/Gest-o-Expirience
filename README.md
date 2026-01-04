@@ -39,7 +39,7 @@ Este sistema foi projetado para resolver a dor do pequeno empresário. Ao clicar
 
 Se você é dono de uma pequena empresa ou MEI e quer profissionalizar sua gestão, ou se você é um recrutador em busca de um desenvolvedor focado em soluções de negócio, entre em contato:
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](linkedin.com/in/brayan-matheus-dev)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/brayan-matheus-dev)
 [![WhatsApp](https://img.shields.io/badge/WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](https://wa.me/5542998484537)
 
 ---
