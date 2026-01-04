@@ -1,48 +1,25 @@
-<h1> Cadastro Banco</h1>
-# 💻 [Gestão Cafeteria]
+# Conveniência Express - Gestão & Catálogo Digital
 
-> Uma descrição breve e impactante do que o projeto faz. Por exemplo: "API de cadastro e gerenciamento de usuários desenvolvida em Python com o framework Flask/Django e banco de dados PostgreSQL."
+O **Conveniência Express** é uma solução Full-Stack desenvolvida para facilitar a operação de MEIs e pequenas empresas que trabalham com vendas e delivery. O sistema transforma a complexidade da gestão em clareza operacional, unindo um catálogo intuitivo para o cliente a um painel de controle robusto para o lojista.
 
----
+## 🚀 Funcionalidades Principais
 
-## 🚀 Tecnologias Utilizadas
+### **Para o Cliente (Interface de Vendas)**
+* **Catálogo Dinâmico:** Navegação rápida por categorias como Bebidas, Churrasco e Doses.
+* **Resumo de Pedido:** Carrinho de compras integrado na página inicial para facilitar o checkout.
+* **Confirmação em Tempo Real:** Feedback imediato após a realização do pedido com tempo estimado de entrega.
 
-Liste as principais tecnologias que você usou no projeto. Isso facilita para recrutadores e outros desenvolvedores verem suas habilidades rapidamente.
+### **Para o Lojista (Painel Administrativo)**
+* **Acesso Restrito:** Área de login segura para proteção dos dados do negócio.
+* **Gestão Kanban:** Painel de operação para gerenciar pedidos em tempo real nas colunas: Novos, Confirmados e Finalizados.
+* **Ações Rápidas:** Botões para atender via WhatsApp, imprimir pedido ou aceitar com um clique.
+* **Caderno Digital (Dashboard):** Transformação automática de pedidos finalizados em dados de faturamento e lucro.
+* **Inteligência de Vendas:** Ranking automático dos "Top 3 Produtos" e categorias que mais geram receita.
 
-* **Linguagem:** Python
-* **Frameworks:** [ Django]
-* **Banco de Dados:** [Ex: PostgreSQL, MySQL, SQLite]
-* **Dependências:** [Ex: SQLAlchemy, Requests, Marshmallow]
-* **Testes:** [Ex: Pytest, Unittest]
-* **App Usado:** [Pycharm]
+## 🛠️ Tecnologias Utilizadas
+* **Python / Django:** Lógica de back-end e gerenciamento de rotas.
+* **HTML5 / CSS3 / JavaScript:** Interface responsiva e dinâmica.
+* **Hospedagem:** PythonAnywhere.
 
----
-
-## ✨ Funcionalidades
-
-Detalhe o que o seu código faz. Use uma lista para clareza.
-
-* **[Funcionalidade 1]:** [Ex: Cadastro de novos usuários (CRUD - Create)]
-* **[Funcionalidade 2]:** [Ex: Visualização de todos os usuários (CRUD - Read)]
-* **[Funcionalidade 3]:** [Ex: Atualização de dados de um usuário específico (CRUD - Update)]
-* **[Funcionalidade 4]:** [Ex: Exclusão de um usuário (CRUD - Delete)]
-* **[Funcionalidade 5]:** [Ex: Autenticação e Autorização (Tokens JWT)]
-
-
-## 🔗 Portfólio / Outros Projetos
-
-Aqui é onde você coloca o link para o site que está fazendo ou para outros projetos importantes.
-
-Confira meu portfólio completo e outros projetos na minha página:
-**[Meu Site Pessoal](https://www.seu-site.com.br)**
-
-Ou explore o projeto de **Frontend/Site** relacionado a esta API:
-**[Nome do Projeto Site](https://github.com/seuusuario/nome-do-repo-frontend)**
-
----
-
-## 🧑‍💻 Autor
-
-* **[Seu Nome Completo]** - [Link para o LinkedIn]
-* **GitHub:** [@bryan779](https://github.com/bryan779)
-
+## 📈 Diferenciais de Gestão
+Este sistema foi projetado para resolver a dor do pequeno empresário. Ao clicar em **"Registrar no Caderno"**, o sistema realiza o fechamento automático da venda, alimentando os gráficos de performance em tempo real.
