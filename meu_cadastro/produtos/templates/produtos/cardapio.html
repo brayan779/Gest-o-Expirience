@@ -74,34 +74,40 @@
             color: #000 !important;
         }
 
-        /* HERO COM IMAGEM DE FUNDO */
+        /* HERO COM IMAGEM DE FUNDO - VERSÃO MAIOR COM GARRAFAS */
         .hero-title {
             text-align: center;
-            padding: 80px 20px;
+            padding: 120px 20px;
             background:
                 linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9)),
-                url('https://images.unsplash.com/photo-1544025162-d76694265947?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80');
+                url('../../../static/img/background.jpg');
             background-size: cover;
             background-position: center;
             position: relative;
             overflow: hidden;
+            margin: 0;
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         .hero-title h1 {
-            letter-spacing: 6px;
-            font-size: 2.8rem;
+            letter-spacing: 8px; /* Aumentei de 6px para 8px */
+            font-size: 3.2rem; /* Aumentei de 2.8rem para 3.2rem */
             margin: 0 0 15px 0;
             color: #fff;
             text-transform: uppercase;
             font-weight: 800;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+            text-shadow: 0 2px 15px rgba(0, 0, 0, 0.9);
         }
 
-        /* FILTROS CIRCULARES - ESTILO INSTAGRAM STORIES */
+        /* NOVO FORMATO PARA FILTROS - RETANGULARES MODERNOS */
         .filtros-container {
             display: flex;
             justify-content: center;
-            gap: 30px;
+            gap: 20px;
             margin: 40px 0 50px;
             flex-wrap: wrap;
             padding: 0 20px;
@@ -113,8 +119,8 @@
             align-items: center;
             text-decoration: none;
             color: inherit;
-            width: 90px;
-            transition: transform 0.3s;
+            width: 140px; /* Largura maior para formato retangular */
+            transition: all 0.3s ease;
         }
 
         .filtro-link:hover {
@@ -125,29 +131,38 @@
             transform: translateY(-5px);
         }
 
-        .filtro-circle {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
+        /* FORMATO RETANGULAR COM CANTOS ARREDONDADOS */
+        .filtro-rectangle {
+            width: 140px;
+            height: 100px;
+            border-radius: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             overflow: hidden;
-            border: 3px solid #333;
+            border: 2px solid #333;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            background-color: rgba(26, 26, 26, 0.8);
+            backdrop-filter: blur(5px);
         }
 
-        .filtro-link.active .filtro-circle {
-            border: 3px solid #ff6600;
-            box-shadow: 0 0 20px rgba(255, 102, 0, 0.6);
+        .filtro-link.active .filtro-rectangle {
+            border: 2px solid #ff6600;
+            box-shadow: 0 0 25px rgba(255, 102, 0, 0.7);
+            transform: scale(1.05);
         }
 
-        .filtro-circle img {
+        .filtro-rectangle img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .filtro-link:hover .filtro-rectangle img {
+            transform: scale(1.1);
         }
 
         .filtro-nome {
@@ -155,17 +170,25 @@
             color: #ccc;
             font-size: 0.9rem;
             text-align: center;
-            padding: 5px 10px;
-            border-radius: 20px;
+            padding: 8px 15px;
+            border-radius: 25px;
             background-color: rgba(51, 51, 51, 0.8);
             transition: all 0.3s;
             backdrop-filter: blur(5px);
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .filtro-link.active .filtro-nome {
             color: #ff6600;
             font-weight: 700;
-            background-color: rgba(255, 102, 0, 0.15);
+            background-color: rgba(255, 102, 0, 0.2);
+            border: 1px solid rgba(255, 102, 0, 0.3);
+        }
+
+        .filtro-link:hover .filtro-nome {
+            color: #ff8533;
+            background-color: rgba(255, 102, 0, 0.1);
         }
 
         /* CONTAINER DE PRODUTOS EM CARROSSEL NETFLIX */
@@ -474,26 +497,27 @@
             }
 
             .hero-title {
-                padding: 60px 15px;
+                padding: 80px 15px; /* Ajustado para responsividade */
+                min-height: 50vh; /* Ajustado para responsividade */
             }
 
             .hero-title h1 {
-                font-size: 2rem;
-                letter-spacing: 4px;
+                font-size: 2.2rem; /* Ajustado para responsividade */
+                letter-spacing: 5px; /* Ajustado para responsividade */
             }
 
             .filtros-container {
-                gap: 20px;
+                gap: 15px;
                 margin: 30px 0 40px;
             }
 
-            .filtro-item {
-                width: 70px;
+            .filtro-link {
+                width: 110px; /* Largura menor em mobile */
             }
 
-            .filtro-circle {
-                width: 65px;
-                height: 65px;
+            .filtro-rectangle {
+                width: 110px;
+                height: 85px;
             }
 
             .produtos-carrossel-container {
@@ -512,20 +536,22 @@
 
         @media (max-width: 480px) {
             .filtros-container {
-                gap: 15px;
+                gap: 10px;
             }
 
-            .filtro-item {
-                width: 60px;
+            .filtro-link {
+                width: 90px; /* Largura ainda menor em telas pequenas */
             }
 
-            .filtro-circle {
-                width: 55px;
-                height: 55px;
+            .filtro-rectangle {
+                width: 90px;
+                height: 70px;
+                border-radius: 10px;
             }
 
             .filtro-nome {
                 font-size: 0.75rem;
+                padding: 6px 10px;
             }
 
             .produto-card {
@@ -543,6 +569,11 @@
             .btn-parceiro {
                 padding: 4px 12px;
                 font-size: 0.75rem;
+            }
+
+            .hero-title h1 {
+                font-size: 1.8rem; /* Ajustado para responsividade */
+                letter-spacing: 3px; /* Ajustado para responsividade */
             }
         }
 
@@ -614,35 +645,6 @@
             margin-bottom: 10px;
         }
 
-        /* LINKS NOS FILTROS CIRCULARES */
-        .filtro-link {
-            text-decoration: none;
-            color: inherit;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 90px;
-        }
-
-        .filtro-link:hover .filtro-circle {
-            transform: scale(1.05);
-            border-color: rgba(255, 102, 0, 0.5);
-        }
-
-        .filtro-link:hover .filtro-nome {
-            color: #ff8533;
-        }
-
-        .filtro-link.active .filtro-circle {
-            border: 3px solid #ff6600;
-            box-shadow: 0 0 20px rgba(255, 102, 0, 0.6);
-        }
-
-        .filtro-link.active .filtro-nome {
-            color: #ff6600;
-            font-weight: 700;
-            background-color: rgba(255, 102, 0, 0.15);
-        }
     </style>
 </head>
 <body>
@@ -659,24 +661,28 @@
     <h1>CONVENIÊNCIA OLIVEIRA</h1>
 </div>
 
-<!-- FILTROS CIRCULARES CLICÁVEIS -->
+<!-- FILTROS RETANGULARES CLICÁVEIS -->
 <div class="filtros-container">
     {% for cat in categorias_pai %}
     <a href="{% url 'produtos:home' %}?categoria_pai={{ cat.id }}"
        class="filtro-link {% if categoria_pai_selecionada.id == cat.id or not categoria_pai_selecionada and forloop.first %}active{% endif %}">
-        <div class="filtro-circle">
+        <div class="filtro-rectangle">
             {% if cat.nome|lower == "bebidas" %}
-            <img src="https://images.unsplash.com/photo-1629203851122-3726ecdf080e?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="{{ cat.nome }}">
+            <img src="https://i.pinimg.com/1200x/b3/89/45/b3894575fd98606db37c2d202545ce93.jpg" alt="{{ cat.nome }}">
             {% elif cat.nome|lower == "doces" %}
             <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="{{ cat.nome }}">
             {% elif cat.nome|lower == "salgados" or cat.nome|lower == "salgadinhos" %}
-            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="{{ cat.nome }}">
+            <img src="https://i.pinimg.com/736x/a1/95/7a/a1957a7915081051ba2f81f38fa2553e.jpg" alt="{{ cat.nome }}">
             {% elif cat.nome|lower == "lanches" %}
             <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="{{ cat.nome }}">
             {% elif cat.nome|lower == "higiene" %}
             <img src="https://images.unsplash.com/photo-1583947581924-860bda6a26df?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="{{ cat.nome }}">
             {% elif cat.nome|lower == "cuidados pessoais" or cat.nome|lower == "pessoais" %}
             <img src="https://images.unsplash.com/photo-1556228578-9c360e2d0b4a?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="{{ cat.nome }}">
+            {% elif cat.nome|lower == "doses" %}
+            <img src="https://i.pinimg.com/1200x/75/4f/2d/754f2dfaf40a4ba384cad2248d25c315.jpg" alt="{{ cat.nome }}">
+            {% elif cat.nome|lower == "churrasco" %}
+<img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="{{ cat.nome }}">
             {% else %}
             <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="{{ cat.nome }}">
             {% endif %}
@@ -781,7 +787,7 @@
             {% include 'produtos/includes/resumo_itens.html' %}
         </div>
         <button type="submit" style="background: rgba(255, 102, 0, 0.9); color: #000; width: 100%; border: none; padding: 18px; border-radius: 8px; font-weight: 700; font-size: 1.1rem; cursor: pointer; letter-spacing: 1px; backdrop-filter: blur(5px);">
-            CONFIRMAR PEDIDO NO WHATSAPP
+            ENVIAR PEDIDO
         </button>
     </form>
 </section>

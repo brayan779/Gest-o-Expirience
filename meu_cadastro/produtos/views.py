@@ -308,21 +308,45 @@ def caderno_gestao(request):
     }
 
     return render(request, 'produtos/caderno.html', contexto)
+
+
 def gerenciar_carrinho_ajax(request, produto_id, acao):
     carrinho = request.session.get('carrinho', {})
-    # Buscamos o produto real pelo ID numérico
-    produto = get_object_or_404(Produto, id=produto_id)
-    sabor_escolhido = request.GET.get('sabor', '')
+
+    # Extrai o ID numérico se o produto_id contiver hífen
+    if '-' in str(produto_id):
+        # Formato: "12-Framboesa"
+        produto_id_str = str(produto_id)
+        partes = produto_id_str.split('-', 1)  # Divide no primeiro hífen
+        produto_id_num = partes[0]  # "12"
+        sabor_escolhido = partes[1] if len(partes) > 1 else ''  # "Framboesa"
+
+        # Busca o produto real usando o ID numérico
+        try:
+            produto_id_int = int(produto_id_num)
+            produto = get_object_or_404(Produto, id=produto_id_int)
+        except ValueError:
+            return JsonResponse({'error': 'ID do produto inválido'}, status=400)
+    else:
+        # Formato: "12" (sem sabor)
+        produto_id_num = str(produto_id)
+        sabor_escolhido = request.GET.get('sabor', '')
+
+        try:
+            produto_id_int = int(produto_id_num)
+            produto = get_object_or_404(Produto, id=produto_id_int)
+        except ValueError:
+            return JsonResponse({'error': 'ID do produto inválido'}, status=400)
 
     # Chave única para diferenciar itens (Ex: "12-Framboesa")
-    item_key = f"{produto_id}-{sabor_escolhido}" if sabor_escolhido else str(produto_id)
+    item_key = f"{produto_id_int}-{sabor_escolhido}" if sabor_escolhido else str(produto_id_int)
 
     if acao == 'adicionar':
         if item_key in carrinho:
             carrinho[item_key]['quantidade'] += 1
         else:
             carrinho[item_key] = {
-                'produto_id': str(produto_id), # Guardamos o ID original
+                'produto_id': str(produto_id_int),  # Guardamos o ID numérico
                 'nome': produto.nome,
                 'preco': str(produto.preco),
                 'quantidade': 1,
@@ -345,7 +369,7 @@ def gerenciar_carrinho_ajax(request, produto_id, acao):
         subtotal = float(dados['preco']) * dados['quantidade']
         total_carrinho += subtotal
         itens_detalhados.append({
-            'produto_id': dados['produto_id'], # ID para o botão remover
+            'produto_id': key,  # Agora passamos a chave completa (ex: "12-Framboesa")
             'nome': dados['nome'],
             'sabor': dados.get('sabor', ''),
             'quantidade': dados['quantidade'],
