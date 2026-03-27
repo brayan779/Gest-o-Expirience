@@ -1,0 +1,1038 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conveniência Oliveira</title>
+
+    <style>
+        /* ESTILO GERAL - FUNDO PRETO COM BLUR */
+        body {
+            background-color: #FF0000 !important;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+            min-height: 100vh;
+        }
+
+        /* CONTAINER PRINCIPAL */
+        .site-container {
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            overflow-x: hidden;
+        }
+
+        /* HEADER MODERNO TRANSPARENTE COM TOQUES LARANJA */
+        .header-moderno {
+            background: #F7F9F7;
+            border-radius: 15px;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 10px;
+            margin: 10px 15px;
+            z-index: 1000;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 102, 0, 0.25);
+            box-shadow: 0 3px 15px rgba(255, 102, 0, 0.1);
+            transition: all 0.3s ease;
+            width: calc(100% - 30px);
+            box-sizing: border-box;
+        }
+
+        .header-moderno:hover {
+            border-color: rgba(255, 102, 0, 0.4);
+            box-shadow: 0 5px 20px rgba(255, 102, 0, 0.2);
+        }
+
+        .logo-express {
+            color: #ff6600;
+            font-size: 1.6rem;
+            font-weight: 800;
+            text-decoration: none;
+            letter-spacing: 1px;
+            text-shadow: 0 0 8px rgba(255, 102, 0, 0.2);
+            padding: 5px 0;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .logo-express:hover {
+            text-shadow: 0 0 12px rgba(255, 102, 0, 0.4);
+        }
+
+        .nav-simplificada {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: nowrap;
+        }
+
+        /* Botão Catálogo com transparência e toques laranja */
+        .btn-catalogo {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            padding: 6px 14px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 102, 0, 0.08);
+            border: 1px solid rgba(255, 102, 0, 0.15);
+            backdrop-filter: blur(8px);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .btn-catalogo:hover {
+            color: #ff6600;
+            background: rgba(255, 102, 0, 0.15);
+            border-color: rgba(255, 102, 0, 0.3);
+            transform: translateY(-1px);
+        }
+
+        /* Botão Parceiro com transparência e efeito laranja mais forte */
+        .btn-parceiro {
+            background: rgba(255, 102, 0, 0.12);
+            color: #ff6600;
+            border: 1px solid rgba(255, 102, 0, 0.25);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            backdrop-filter: blur(8px);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .btn-parceiro:hover {
+            background: rgba(255, 102, 0, 0.2);
+            border-color: rgba(255, 102, 0, 0.4);
+            transform: translateY(-1px);
+        }
+
+        /* NOVO: Botão Carrinho */
+        .btn-carrinho-header {
+            background: rgba(255, 102, 0, 0.2);
+            color: #ff6600;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            padding: 6px 14px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            backdrop-filter: blur(8px);
+            white-space: nowrap;
+            flex-shrink: 0;
+            margin-left: 5px;
+        }
+
+        .btn-carrinho-header:hover {
+            background: rgba(255, 193, 7, 0.25);
+            border-color: rgba(255, 193, 7, 0.5);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(255, 193, 7, 0.2);
+        }
+
+        /* RESPONSIVIDADE OTIMIZADA */
+        @media (max-width: 768px) {
+            .header-moderno {
+                padding: 8px 15px;
+                margin: 8px 10px;
+                border-radius: 12px;
+                width: calc(100% - 20px);
+                top: 8px;
+            }
+
+            .logo-express {
+                font-size: 1.3rem;
+                letter-spacing: 0.5px;
+            }
+
+            .nav-simplificada {
+                gap: 6px;
+            }
+
+            .btn-catalogo, .btn-parceiro, .btn-carrinho-header {
+                font-size: 0.75rem;
+                padding: 5px 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-moderno {
+                padding: 6px 12px;
+                margin: 6px 8px;
+                border-radius: 10px;
+                width: calc(100% - 16px);
+                top: 6px;
+            }
+
+            .logo-express {
+                font-size: 1.1rem;
+            }
+
+            .nav-simplificada {
+                gap: 4px;
+            }
+
+            .btn-catalogo, .btn-parceiro, .btn-carrinho-header {
+                font-size: 0.7rem;
+                padding: 4px 8px;
+            }
+
+            /* Em telas muito pequenas, mostra apenas ícones */
+            @media (max-width: 350px) {
+                .btn-catalogo span:last-child,
+                .btn-parceiro span:last-child,
+                .btn-carrinho-header span:last-child {
+                    display: none;
+                }
+
+                .btn-catalogo, .btn-parceiro, .btn-carrinho-header {
+                    padding: 6px;
+                    border-radius: 8px;
+                }
+            }
+        }
+
+        /* HERO COM IMAGEM DE FUNDO - VERSÃO MAIOR COM GARRAFAS */
+        .hero-title {
+            text-align: center;
+            padding: 100px 15px;
+            background:
+                linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9)),
+                url(''/media/produtos/background.jpg'');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+            margin: 0;
+            min-height: 50vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .hero-title h1 {
+            letter-spacing: 4px;
+            font-size: 2.2rem;
+            margin: 0 0 10px 0;
+            color: #fff;
+            text-transform: uppercase;
+            font-weight: 800;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+            line-height: 1.2;
+            max-width: 100%;
+            padding: 0 10px;
+        }
+
+        /* NOVO FORMATO PARA FILTROS - RETANGULARES MODERNOS */
+        .filtros-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0 40px;
+            flex-wrap: wrap;
+            padding: 0 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .filtro-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+            width: 120px;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .filtro-link:hover {
+            transform: translateY(-3px);
+        }
+
+        .filtro-link.active {
+            transform: translateY(-3px);
+        }
+
+        /* FORMATO RETANGULAR COM CANTOS ARREDONDADOS */
+        .filtro-rectangle {
+            width: 120px;
+            height: 85px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            overflow: hidden;
+            border: 2px solid #333;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+            background-color: rgba(26, 26, 26, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .filtro-link.active .filtro-rectangle {
+            border: 2px solid #ff6600;
+            box-shadow: 0 0 15px rgba(255, 102, 0, 0.5);
+            transform: scale(1.03);
+        }
+
+        .filtro-rectangle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .filtro-link:hover .filtro-rectangle img {
+            transform: scale(1.08);
+        }
+
+        .filtro-nome {
+            font-weight: 600;
+            color: #ccc;
+            font-size: 0.8rem;
+            text-align: center;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background-color: rgba(51, 51, 51, 0.8);
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .filtro-link.active .filtro-nome {
+            color: #ff6600;
+            font-weight: 700;
+            background-color: rgba(255, 102, 0, 0.15);
+            border: 1px solid rgba(255, 102, 0, 0.25);
+        }
+
+        .filtro-link:hover .filtro-nome {
+            color: #ff8533;
+            background-color: rgba(255, 102, 0, 0.1);
+        }
+
+        /* CONTAINER DE PRODUTOS EM CARROSSEL NETFLIX */
+        .produtos-carrossel-container {
+            padding: 0 4%;
+            margin-bottom: 40px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .categoria-titulo {
+            color: #fff;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            padding-left: 5px;
+            font-weight: 600;
+        }
+
+        .produtos-carrossel {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding: 15px 5px;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            width: 100%;
+        }
+
+        /* Esconde a barra de rolagem mas mantém funcionalidade */
+        .produtos-carrossel::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .produtos-carrossel::-webkit-scrollbar-track {
+            background: rgba(51, 51, 51, 0.2);
+            border-radius: 8px;
+        }
+
+        .produtos-carrossel::-webkit-scrollbar-thumb {
+            background: #ff6600;
+            border-radius: 8px;
+        }
+
+        /* CARD DE PRODUTO - FORMA MAIS QUADRADA COM BLUR */
+        .produto-card {
+            background-color: rgba(17, 17, 17, 0.9);
+            border: 1.5px solid rgba(255, 102, 0, 0.4);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            position: relative;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+            min-width: 220px;
+            flex-shrink: 0;
+            max-width: 100%;
+        }
+
+        .produto-card:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 10px 20px rgba(255, 102, 0, 0.2);
+            border-color: rgba(255, 133, 51, 0.5);
+            backdrop-filter: blur(12px);
+        }
+
+        /* Efeito de brilho na borda com blur */
+        .produto-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg,
+                rgba(255, 102, 0, 0.1),
+                rgba(255, 133, 51, 0.1),
+                rgba(255, 102, 0, 0.1));
+            border-radius: 10px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s;
+            backdrop-filter: blur(5px);
+        }
+
+        .produto-card:hover::before {
+            opacity: 1;
+        }
+
+        .icon-area {
+            background-color: rgba(26, 26, 26, 0.8);
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid rgba(51, 51, 51, 0.5);
+            backdrop-filter: blur(5px);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .icon-area img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+            transition: transform 0.4s ease;
+        }
+        .produto-card:hover .icon-area img {
+        transform: scale(1.05);
+        }
+
+        .placeholder-imagem {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(40, 40, 40, 0.8);
+            color: #888;
+            font-size: 2.5rem;
+            font-family: 'Segoe UI Emoji', 'Apple Color Emoji', sans-serif;
+        }
+
+        .info-area {
+            padding: 15px;
+        }
+
+        .badge {
+            background: rgba(255, 102, 0, 0.15);
+            color: #ff8533;
+            font-size: 9px;
+            padding: 4px 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: inline-block;
+            border: 1px solid rgba(255, 102, 0, 0.4);
+            font-weight: bold;
+            backdrop-filter: blur(5px);
+        }
+
+        .info-area h3 {
+            margin: 6px 0;
+            font-size: 1.1rem;
+            color: #fff;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .info-area p {
+            color: #bbb;
+            font-size: 0.85rem;
+            min-height: 35px;
+            line-height: 1.4;
+            margin-bottom: 12px;
+        }
+
+        .preco-acao {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            position: relative;
+        }
+
+        .preco {
+            font-weight: 800;
+            font-size: 1.3rem;
+            color: #ff6600;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            letter-spacing: 0.5px;
+        }
+
+        .btn-mais {
+            background: rgba(255, 102, 0, 0.9);
+            color: #000;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 3px 8px rgba(255, 102, 0, 0.3);
+        }
+
+        .btn-mais:hover {
+            background: rgba(255, 133, 51, 0.95);
+            transform: scale(1.1);
+            box-shadow: 0 5px 12px rgba(255, 102, 0, 0.4);
+        }
+
+        .btn-mais.clicado {
+            animation: brilho_click 0.3s ease-in-out;
+        }
+
+        @keyframes brilho_click {
+            0% { box-shadow: 0 0 0px rgba(255, 102, 0, 0.8); transform: scale(1); }
+            50% { box-shadow: 0 0 15px rgba(255, 102, 0, 0.8); transform: scale(1.2); }
+            100% { box-shadow: 0 0 0px rgba(255, 102, 0, 0.8); transform: scale(1); }
+        }
+
+        /* Estilo da mensagem flutuante "Adicionado!" */
+        .aviso-adicionado {
+            position: absolute;
+            background: rgba(255, 102, 0, 0.9);
+            color: #000;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            bottom: 40px;
+            right: 0;
+            animation: subir_e_sumir 0.8s ease-out forwards;
+            pointer-events: none;
+            z-index: 10;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 133, 51, 0.5);
+        }
+
+        /* Animação para a mensagem subir e desaparecer */
+        @keyframes subir_e_sumir {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-20px); opacity: 0; }
+        }
+
+        /* SEÇÃO FINALIZAR PEDIDO */
+        .finalizar {
+            max-width: 500px;
+            margin: 60px auto;
+            padding: 25px;
+            background: rgba(17, 17, 17, 0.9);
+            border-radius: 12px;
+            border: 1.5px solid rgba(255, 102, 0, 0.4);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            width: calc(100% - 30px);
+            box-sizing: border-box;
+        }
+
+        .finalizar h2 {
+            text-align: center;
+            color: #ff6600;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            color: #bbb;
+            font-weight: 500;
+        }
+
+        input, textarea {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(51, 51, 51, 0.7);
+            color: #fff;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+            box-sizing: border-box;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: rgba(255, 102, 0, 0.6);
+            box-shadow: 0 0 0 2px rgba(255, 102, 0, 0.2);
+        }
+
+        .finalizar button[type="submit"] {
+            background: rgba(255, 102, 0, 0.9);
+            color: #000;
+            width: 100%;
+            border: none;
+            padding: 15px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 15px;
+            letter-spacing: 1px;
+            backdrop-filter: blur(5px);
+        }
+
+        .finalizar button[type="submit"]:hover {
+            background: rgba(255, 133, 51, 0.95);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 102, 0, 0.3);
+        }
+
+        /* Animação de entrada dos cards */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .produto-card {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* Efeito de gradiente sutil no fundo */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(255, 102, 0, 0.05) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(255, 102, 0, 0.03) 0%, transparent 50%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* ESTILO DOS FILTROS ORIGINAIS DO CÓDIGO 1 (mantido para compatibilidade) */
+        .filtros {
+            display: none; /* Escondendo os filtros antigos */
+        }
+
+        /* Classe para esconder elementos */
+        .hidden {
+            display: none !important;
+        }
+
+        /* NOVOS ESTILOS PARA SUBCATEGORIAS */
+        .subcategoria-header {
+            display: flex;
+            align-items: center;
+            margin: 30px 4% 20px 4%;
+            padding-left: 10px;
+        }
+
+        .subcategoria-bar {
+            width: 4px;
+            height: 25px;
+            background: #ff6600;
+            margin-right: 10px;
+            border-radius: 2px;
+        }
+
+        .subcategoria-title {
+            color: #fff;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .no-products {
+            text-align: center;
+            padding: 40px 15px;
+            color: #888;
+        }
+
+        .no-products h3 {
+            color: #ff8533;
+            margin-bottom: 8px;
+            font-size: 1.2rem;
+        }
+
+        /* Responsividade para os filtros */
+        @media (max-width: 768px) {
+            .filtros-container {
+                gap: 12px;
+                margin: 25px 0 30px;
+            }
+
+            .filtro-link {
+                width: 100px;
+            }
+
+            .filtro-rectangle {
+                width: 100px;
+                height: 70px;
+            }
+
+            .hero-title {
+                padding: 80px 10px;
+                min-height: 40vh;
+            }
+
+            .hero-title h1 {
+                font-size: 1.8rem;
+                letter-spacing: 2px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .filtros-container {
+                gap: 10px;
+            }
+
+            .filtro-link {
+                width: 85px;
+            }
+
+            .filtro-rectangle {
+                width: 85px;
+                height: 60px;
+                border-radius: 8px;
+            }
+
+            .filtro-nome {
+                font-size: 0.7rem;
+                padding: 5px 8px;
+            }
+
+            .produto-card {
+                min-width: 200px;
+            }
+
+            .hero-title h1 {
+                font-size: 1.5rem;
+                letter-spacing: 1px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+<div class="site-container">
+
+<!-- HEADER MODERNO TRANSPARENTE COM TOQUES LARANJA -->
+<header class="header-moderno">
+    <a href="/" class="logo-express">Gestao facilitada </a>
+
+    <nav class="nav-simplificada">
+        <a href="/" class="btn-catalogo">
+            <span>🛍️</span> Catálogo
+        </a>
+<!-- NOVO BOTÃO: Ir para Carrinho -->
+        <a href="#checkout" class="btn-carrinho-header">
+            <span>🛒</span> Carrinho
+        </a>
+
+        <a href="{% url 'login' %}" class="btn-parceiro">
+            <span>🤝</span> Sou Parceiro
+        </a>
+
+
+    </nav>
+</header>
+
+<div class="hero-title">
+    <h1>RESTAURANTE SILVIA</h1>
+</div>
+
+<!-- FILTROS RETANGULARES CLICÁVEIS -->
+<div class="filtros-container">
+    {% for cat in categorias_pai %}
+    <a href="{% url 'produtos:home' %}?categoria_pai={{ cat.id }}"
+       class="filtro-link {% if categoria_pai_selecionada.id == cat.id or not categoria_pai_selecionada and forloop.first %}active{% endif %}">
+        <div class="filtro-rectangle">
+            {% if cat.nome|lower == "reposição" %}
+            <img src="https://i.pinimg.com/736x/d1/7c/49/d17c4928edabd55251a5094a547cb545.jpg" alt="{{ cat.nome }}">
+            {% elif cat.nome|lower == "marmitas" %}
+            <img src="https://i.pinimg.com/1200x/20/94/8e/20948e5d74745ca8a6f8652dfcbe41dc.jpg" alt="{{ cat.nome }}">
+            {% elif cat.nome|lower == "salgados" or cat.nome|lower == "salgadinhos" %}
+            <img src="https://i.pinimg.com/736x/a1/95/7a/a1957a7915081051ba2f81f38fa2553e.jpg" alt="{{ cat.nome }}">
+            {% elif cat.nome|lower == "lanches" %}
+            <img src="https://i.pinimg.com/1200x/90/e4/82/90e4824224b82a769281ae3502e92e6c.jpg" alt="{{ cat.nome }}">
+            {% elif cat.nome|lower == "utensilios" %}
+            <img src="https://i.pinimg.com/736x/b3/3d/75/b33d75f4addc475307cf693ffe6a1b00.jpg" alt="{{ cat.nome }}">
+            {% elif cat.nome|lower == "cuidados pessoais" or cat.nome|lower == "pessoais" %}
+            <img src="https://images.unsplash.com/photo-1556228578-9c360e2d0b4a?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="{{ cat.nome }}">
+            {% elif cat.nome|lower == "doses" %}
+            <img src="https://i.pinimg.com/1200x/75/4f/2d/754f2dfaf40a4ba384cad2248d25c315.jpg" alt="{{ cat.nome }}">
+            {% elif cat.nome|lower == "churrasco" %}
+<img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="{{ cat.nome }}">
+            {% else %}
+            <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="{{ cat.nome }}">
+            {% endif %}
+        </div>
+        <span class="filtro-nome">{{ cat.nome|upper }}</span>
+    </a>
+    {% endfor %}
+</div>
+
+<!-- SUBTÍTULO DA CATEGORIA SELECIONADA -->
+{% if categoria_pai_selecionada or categorias_pai.first %}
+<div style="text-align: center; margin: 15px 0 8px 0; padding: 0 10px; width: 100%; box-sizing: border-box;">
+    <h2 style="color: #ff6600; font-size: 1.8rem; font-weight: 700; letter-spacing: 1px; line-height: 1.2;">
+        {% if categoria_pai_selecionada %}
+            {{ categoria_pai_selecionada.nome|upper }}
+        {% else %}
+            {{ categorias_pai.first.nome|upper }}
+        {% endif %}
+    </h2>
+</div>
+{% endif %}
+
+<!-- CONTAINER DE PRODUTOS ORGANIZADOS POR SUBCATEGORIA -->
+<div id="container-produtos-subcategorias" style="padding: 0 4%; margin-bottom: 40px; width: 100%; box-sizing: border-box;">
+
+    {% if produtos_por_subcategoria %}
+        <!-- MOSTRA TODAS AS SUBCATEGORIAS UMA ABAIXO DA OUTRA -->
+        {% for subcat, produtos_list in produtos_por_subcategoria.items %}
+        <div class="produtos-subcategoria-section">
+
+            <!-- CABEÇALHO DA SUBCATEGORIA (NÃO CLICÁVEL) -->
+            <div class="subcategoria-header">
+                <div class="subcategoria-bar"></div>
+                <h3 class="subcategoria-title">{{ subcat.nome|upper }}</h3>
+            </div>
+
+            <!-- PRODUTOS DESTA SUBCATEGORIA EM CARROSSEL -->
+            {% if produtos_list %}
+            <div class="produtos-carrossel">
+                {% for produto in produtos_list %}
+                <div class="produto-card">
+                    <div class="icon-area">
+                        {% if produto.imagem %}
+                            <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" loading="lazy" >
+                        {% else %}
+                            <div class="placeholder-imagem">
+                            📦
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="info-area">
+                        <span class="badge">{{ subcat.nome|upper }}</span>
+                        <h3>{{ produto.nome }}</h3>
+                        <p>{{ produto.descricao|truncatechars:60 }}</p>
+                        <div class="preco-acao">
+                            <span class="preco">R$ {{ produto.preco }}</span>
+                            <button type="button"
+                                    onclick="verificarSabores(event, '{{ produto.id }}', '{{ produto.nome }}', [{% for s in produto.sabores.all %}'{{ s.nome }}'{% if not forloop.last %}, {% endif %}{% endfor %}])"
+                                    class="btn-mais">
+                                +
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="no-products">
+                <p>Nenhum produto disponível nesta subcategoria</p>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+    {% else %}
+        <!-- SE NÃO HOUVER PRODUTOS -->
+        <div class="no-products">
+            <h3>Selecione uma categoria</h3>
+            <p>Clique em uma das categorias acima para ver os produtos</p>
+        </div>
+    {% endif %}
+</div>
+
+<section class="finalizar" id="checkout">
+    <h2 style="text-align: center; color: #ffc107; font-size: 1.4rem;">🛒 SEU PEDIDO</h2>
+    <form action="{% url 'produtos:finalizar_pedido' %}" method="POST">
+        {% csrf_token %}
+        <div class="input-group">
+            <label>Nome Completo *</label>
+            <input type="text" name="nome_completo" required>
+        </div>
+        <div class="input-group">
+            <label>Telefone (WhatsApp) *</label>
+            <input type="text" name="telefone" placeholder="(00) 00000-0000" required>
+        </div>
+        <div class="input-group">
+            <label>Endereço de Entrega *</label>
+            <textarea name="endereco" rows="3" placeholder="Rua, número, bairro e referência" required></textarea>
+        </div>
+
+        <div id="resumo-carrinho-container" style="background: rgba(0, 0, 0, 0.8); padding: 15px; border-radius: 8px; border: 1px dashed rgba(255, 102, 0, 0.3); margin-bottom: 20px; backdrop-filter: blur(5px);">
+            {% include 'produtos/includes/resumo_itens.html' %}
+        </div>
+        <button type="submit" style="background: rgba(255, 102, 0, 0.9); color: #000; width: 100%; border: none; padding: 15px; border-radius: 6px; font-weight: 700; font-size: 1rem; cursor: pointer; letter-spacing: 1px; backdrop-filter: blur(5px);">
+            ENVIAR PEDIDO
+        </button>
+    </form>
+</section>
+
+</div> <!-- Fecha .site-container -->
+
+<script>
+// Variável global para guardar a URL do produto que está esperando o sabor
+let urlAgendada = "";
+
+function verificarSabores(event, produtoId, produtoNome, listaSabores) {
+    // Previne comportamento padrão e propagação
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
+    // CORREÇÃO AQUI: Use o ID do produto, não o slug
+    const baseUrl = `{% url 'produtos:carrinho_ajax' 999999 'adicionar' %}`.replace('999999', produtoId);
+
+    // Se o produto tiver sabores, abre a modal
+    if (listaSabores && listaSabores.length > 0 && listaSabores[0] !== '') {
+        urlAgendada = baseUrl; // Guarda a URL base
+        document.getElementById('modal-produto-nome').innerText = produtoNome;
+        const container = document.getElementById('lista-sabores');
+        container.innerHTML = ""; // Limpa sabores anteriores
+
+        listaSabores.forEach(sabor => {
+            if (sabor && sabor.trim() !== '') {
+                const btn = document.createElement('button');
+                btn.innerText = sabor;
+                btn.style = "background: rgba(255,102,0,0.1); border: 1px solid #ff6600; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-weight: 600; transition: 0.3s";
+                btn.onclick = () => confirmarSabor(sabor); // Quando clicar no sabor, confirma
+                container.appendChild(btn);
+            }
+        });
+
+        document.getElementById('modal-sabores').style.display = 'flex';
+    } else {
+        // Se NÃO tiver sabor, chama o seu atualizarCarrinho original direto
+        atualizarCarrinho(baseUrl, event);
+    }
+}
+
+function confirmarSabor(sabor) {
+    // Adiciona o sabor na URL como um parâmetro (Query String)
+    const urlComSabor = `${urlAgendada}?sabor=${encodeURIComponent(sabor)}`;
+    fecharModalSabores();
+    atualizarCarrinho(urlComSabor);
+}
+
+function fecharModalSabores() {
+    document.getElementById('modal-sabores').style.display = 'none';
+}
+
+// SUA FUNÇÃO ORIGINAL (AJUSTADA)
+function atualizarCarrinho(urlDoDjango, event) {
+    // Se o evento existir (clique direto no +), pegamos o botão
+    const botaoClicado = (event && event.currentTarget && event.currentTarget.classList.contains('btn-mais')) ? event.currentTarget : null;
+
+    fetch(urlDoDjango, {
+        method: 'GET',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.sucesso) {
+            const container = document.getElementById('resumo-carrinho-container');
+            if (container) container.innerHTML = data.html;
+
+            const totalDisplay = document.getElementById('total-carrinho-display');
+            if (totalDisplay) totalDisplay.innerText = `TOTAL: ${data.total}`;
+
+            // Feedback visual se tivermos o botão
+            if (botaoClicado) {
+                botaoClicado.classList.add('clicado');
+                setTimeout(() => botaoClicado.classList.remove('clicado'), 300);
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Erro ao atualizar carrinho:', error);
+    });
+}
+
+// Função para rolar suavemente até o carrinho
+function scrollParaCarrinho() {
+    const carrinhoSection = document.getElementById('checkout');
+    if (carrinhoSection) {
+        carrinhoSection.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }
+}
+</script>
+
+<div id="modal-sabores" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; backdrop-filter: blur(8px); align-items: center; justify-content: center;">
+    <div style="background: #111; border: 1px solid #ff6600; width: 90%; max-width: 350px; padding: 20px; border-radius: 12px; box-shadow: 0 0 20px rgba(255,102,0,0.2);">
+        <h2 id="modal-titulo" style="color: #ff6600; margin-top: 0; font-size: 1.2rem;">Escolha o Sabor</h2>
+        <p style="color: #ccc; font-size: 0.8rem; margin-bottom: 15px;">Selecione uma opção para o seu <span id="modal-produto-nome"></span>:</p>
+
+        <div id="lista-sabores" style="display: grid; gap: 8px; max-height: 250px; overflow-y: auto; padding-right: 5px;">
+            </div>
+
+        <button onclick="fecharModalSabores()" style="margin-top: 15px; width: 100%; background: transparent; border: 1px solid #444; color: #888; padding: 8px; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">Cancelar</button>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,1644 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Operação | ClarityNow</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* RESET E ESTILOS GERAIS COM ESTILO CLARITYNOW LARANJA */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        html, body {
+            height: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            display: flex;
+            min-height: 100%;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0f0c 100%);
+            color: #F5F5F5;
+            position: relative;
+        }
+
+        /* Efeito de grade sutil no fundo */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(255, 140, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 140, 0, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* VARIÁVEIS CSS COM TONS DE LARANJA */
+        :root {
+            --primary: #ff8c00;
+            --primary-dark: #d2691e;
+            --primary-light: #ffa500;
+            --accent: #FFD166;
+            --black: #0A0A0A;
+            --dark-1: #111111;
+            --dark-2: #1A1A1A;
+            --dark-3: #2A2A2A;
+            --gray-1: #444444;
+            --gray-2: #666666;
+            --gray-3: #888888;
+            --light: #F5F5F5;
+            --success: #06D6A0;
+            --whatsapp: #25D366;
+            --warning: #FFD166;
+            --danger: #EF476F;
+            --radius: 12px;
+            --radius-sm: 8px;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 15px 40px rgba(255, 140, 0, 0.15);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* HEADER LATERAL (SIDEBAR) COM ESTILO TRANSPARENTE LARANJA */
+        .sidebar-header {
+            width: 280px;
+            min-height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background-color: rgba(25, 20, 15, 0.85);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            border-right: 1px solid rgba(255, 140, 0, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: width 0.3s ease, transform 0.3s ease;
+            z-index: 1000;
+            overflow-y: auto;
+            overflow-x: hidden;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .sidebar-top {
+            padding: 25px 20px;
+            border-bottom: 1px solid rgba(255, 140, 0, 0.3);
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.6);
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        /* LOGO COM ÍCONE CLICÁVEL */
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            color: var(--primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .sidebar-logo:hover {
+            transform: scale(1.05);
+        }
+
+        .sidebar-logo i {
+            font-size: 2.2rem;
+            color: var(--primary);
+            transition: transform 0.5s ease;
+        }
+
+        /* ÍCONE GIRA QUANDO SIDEBAR ESTÁ RECOLHIDO */
+        .sidebar-header.collapsed .sidebar-logo i {
+            transform: rotateY(180deg);
+        }
+
+        .sidebar-tagline {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.85rem;
+            margin-top: 8px;
+            font-weight: 300;
+        }
+
+        .sidebar-nav {
+            flex-grow: 1;
+            padding: 25px 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .nav-group {
+            margin-bottom: 25px;
+        }
+
+        .nav-group-title {
+            color: var(--primary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0 20px 10px 20px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 140, 0, 0.2);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            padding: 14px 20px;
+            margin: 5px 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            white-space: nowrap;
+            background-color: rgba(255, 140, 0, 0.08);
+            border: 1px solid rgba(255, 140, 0, 0.12);
+        }
+
+        .nav-link i {
+            width: 24px;
+            text-align: center;
+            margin-right: 15px;
+            font-size: 1.2rem;
+            color: rgba(255, 140, 0, 0.9);
+            flex-shrink: 0;
+        }
+
+        .nav-link-text {
+            flex-grow: 1;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255, 140, 0, 0.2);
+            color: #ffffff;
+            transform: translateX(5px);
+            border-color: rgba(255, 140, 0, 0.35);
+        }
+
+        .nav-link.active {
+            background-color: rgba(255, 140, 0, 0.25);
+            color: #ffffff;
+            font-weight: 600;
+            border-color: rgba(255, 140, 0, 0.4);
+            box-shadow: 0 0 20px rgba(255, 140, 0, 0.15);
+        }
+
+        .nav-link.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background-color: var(--primary);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid rgba(255, 140, 0, 0.2);
+            background-color: rgba(0, 0, 0, 0.6);
+            flex-shrink: 0;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 140, 0, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            border: 1px solid rgba(255, 140, 0, 0.35);
+            backdrop-filter: blur(5px);
+        }
+
+        .user-info h4 {
+            color: #ffffff;
+            font-size: 0.95rem;
+            margin-bottom: 3px;
+            white-space: nowrap;
+        }
+
+        .user-info p {
+            color: var(--primary);
+            font-size: 0.8rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            background-color: rgba(255, 140, 0, 0.15);
+            color: var(--primary);
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 15px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            font-family: inherit;
+            text-decoration: none;
+            backdrop-filter: blur(5px);
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(255, 140, 0, 0.3);
+            color: #ffffff;
+        }
+
+        /* SIDEBAR RECOLHIDA */
+        .sidebar-header.collapsed {
+            width: 80px;
+        }
+
+        .sidebar-header.collapsed .sidebar-logo-text,
+        .sidebar-header.collapsed .sidebar-tagline,
+        .sidebar-header.collapsed .nav-link-text,
+        .sidebar-header.collapsed .nav-group-title,
+        .sidebar-header.collapsed .user-info,
+        .sidebar-header.collapsed .logout-btn span {
+            display: none;
+        }
+
+        .sidebar-header.collapsed .sidebar-logo {
+            justify-content: center;
+        }
+
+        .sidebar-header.collapsed .nav-link {
+            justify-content: center;
+            padding: 15px;
+            margin: 8px 15px;
+        }
+
+        .sidebar-header.collapsed .nav-link i {
+            margin-right: 0;
+            font-size: 1.4rem;
+        }
+
+        /* CONTEÚDO PRINCIPAL */
+        .main-content {
+            flex-grow: 1;
+            margin-left: 280px;
+            transition: margin-left 0.3s ease;
+            min-height: 100vh;
+            width: calc(100% - 280px);
+        }
+
+        .sidebar-header.collapsed ~ .main-content {
+            margin-left: 80px;
+            width: calc(100% - 80px);
+        }
+
+        /* BOTÃO PARA MENU MOBILE */
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: rgba(255, 140, 0, 0.3);
+            color: #ffffff;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 999;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        /* ANIMAÇÕES */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(30px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes pulse-orange {
+            0% { box-shadow: 0 0 0 0 rgba(255, 140, 0, 0.6); }
+            70% { box-shadow: 0 0 0 12px rgba(255, 140, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 140, 0, 0); }
+        }
+
+        /* KANBAN CONTAINER COM ESTILO TRANSPARENTE LARANJA */
+        .kanban-header {
+            padding: 30px 30px 20px;
+            animation: fadeIn 0.8s ease;
+            width: 100%;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            width: 100%;
+        }
+
+        .title-section h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, #ffffff, #ffa500);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 15px rgba(255, 140, 0, 0.3);
+        }
+
+        .title-section p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            max-width: 500px;
+        }
+
+        .stats-container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: rgba(26, 26, 26, 0.6);
+            border-radius: 12px;
+            padding: 15px 20px;
+            min-width: 140px;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .stat-card:hover {
+            border-color: rgba(255, 140, 0, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(255, 140, 0, 0.2);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #ff8c00;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 5px;
+        }
+
+        /* KANBAN CONTAINER */
+        .kanban-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 25px;
+            padding: 0 30px 40px;
+            animation: slideInRight 0.6s ease;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .column {
+            background: rgba(17, 17, 17, 0.6);
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 600px;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        .column::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ff8c00, transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .column:hover::before {
+            transform: translateX(100%);
+        }
+
+        .column:hover {
+            border-color: rgba(255, 140, 0, 0.35);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .column-header {
+            background: linear-gradient(90deg, rgba(255, 140, 0, 0.1), rgba(255, 140, 0, 0.05));
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 140, 0, 0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .column-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .column-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 140, 0, 0.15);
+            color: var(--primary);
+            border: 1px solid rgba(255, 140, 0, 0.25);
+            backdrop-filter: blur(5px);
+        }
+
+        .column-count {
+            background: rgba(255, 140, 0, 0.25);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 700;
+            border: 1px solid rgba(255, 140, 0, 0.4);
+        }
+
+        .cards-container {
+            padding: 20px;
+            overflow-y: auto;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            min-height: 400px;
+        }
+
+        /* CARDS DE PEDIDO COM TRANSPARÊNCIA LARANJA */
+        .pedido-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            transition: var(--transition);
+            animation: fadeIn 0.5s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 140, 0, 0.2);
+        }
+
+        .pedido-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--primary-light));
+        }
+
+        .pedido-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255, 140, 0, 0.15);
+            background-color: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 140, 0, 0.35);
+        }
+
+        .pedido-card.new {
+            animation: pulse-orange 2s infinite;
+        }
+
+        .pedido-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .pedido-id {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        .pedido-cliente {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--light);
+            margin-bottom: 5px;
+        }
+
+        .pedido-time {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .pedido-details {
+            margin-bottom: 15px;
+        }
+
+        .detail-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+
+        .detail-icon {
+            color: var(--primary);
+            width: 16px;
+        }
+
+        .itens-list {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+            margin-top: 10px;
+            border: 1px solid rgba(255, 140, 0, 0.15);
+            backdrop-filter: blur(5px);
+        }
+
+        .itens-title {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .itens-content {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .action-btn {
+            padding: 10px 8px;
+            border-radius: var(--radius-sm);
+            border: none;
+            font-weight: 700;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            text-align: center;
+            font-family: inherit;
+            min-height: 40px;
+            backdrop-filter: blur(5px);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-whatsapp {
+            background: linear-gradient(135deg, var(--whatsapp), #1ebe5e);
+            color: white;
+        }
+
+        .btn-print {
+            background: linear-gradient(135deg, rgba(68, 68, 68, 0.8), rgba(102, 102, 102, 0.8));
+            color: white;
+        }
+
+        .btn-confirm {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-finalizar {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            width: 100%;
+            margin-top: 10px;
+            padding: 12px;
+        }
+
+        /* BOTÃO REGISTRAR NO CADERNO - FUNCIONAL LARANJA */
+        .btn-registrar-caderno {
+            background: linear-gradient(135deg, var(--success), #05b587);
+            color: white;
+            width: 100%;
+            margin-top: 10px;
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: var(--transition);
+            text-decoration: none;
+            font-family: inherit;
+            backdrop-filter: blur(5px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-registrar-caderno::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-registrar-caderno:hover::before {
+            left: 100%;
+        }
+
+        .btn-registrar-caderno:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(6, 214, 160, 0.3);
+        }
+
+        .btn-recusar {
+            background: linear-gradient(135deg, var(--danger), #d00000);
+            color: white;
+            margin-top: 10px;
+            width: 100%;
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: var(--transition);
+            text-decoration: none;
+            min-height: 40px;
+            font-family: inherit;
+            backdrop-filter: blur(5px);
+        }
+
+        .btn-recusar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(239, 71, 111, 0.3);
+        }
+
+        /* NOVO ESTILO PARA OS CARDS MINIMALISTAS */
+        .minimal-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            overflow: hidden;
+            transition: var(--transition);
+            backdrop-filter: blur(5px);
+        }
+
+        .minimal-card:hover {
+            border-color: rgba(255, 140, 0, 0.35);
+            transform: translateY(-3px);
+        }
+
+        .minimal-summary {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            list-style: none;
+        }
+
+        .minimal-summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .minimal-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .minimal-id {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .minimal-cliente {
+            font-weight: 700;
+            color: var(--light);
+        }
+
+        /* ÍCONE DE VENDINHA NO LUGAR DA SETA */
+        .minimal-toggle {
+            color: var(--primary);
+            transition: transform 0.3s ease;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: rgba(255, 140, 0, 0.1);
+            cursor: pointer;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+        }
+
+        .minimal-toggle:hover {
+            background: rgba(255, 140, 0, 0.2);
+        }
+
+        .minimal-toggle i {
+            transition: transform 0.3s ease;
+        }
+
+        .minimal-card[open] .minimal-toggle i {
+            transform: rotate(180deg);
+        }
+
+        .minimal-content {
+            padding: 20px;
+            border-top: 1px solid rgba(255, 140, 0, 0.15);
+            background: rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+            color: rgba(255, 140, 0, 0.5);
+        }
+
+        .empty-text {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .empty-subtext {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .notification {
+            position: fixed;
+            top: 90px;
+            right: 30px;
+            background: linear-gradient(135deg, rgba(255, 140, 0, 0.9), rgba(229, 90, 43, 0.9));
+            color: white;
+            padding: 18px 24px;
+            border-radius: var(--radius);
+            box-shadow: 0 10px 30px rgba(255, 140, 0, 0.3);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            max-width: 400px;
+            animation: slideInRight 0.5s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 140, 0, 0.3);
+        }
+
+        .notification-icon {
+            font-size: 1.5rem;
+        }
+
+        .notification-content h4 {
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .notification-content p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(10, 10, 10, 0.8);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 140, 0, 0.5);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 140, 0, 0.8);
+        }
+
+        .bg-decoration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 140, 0, 0.1) 0%, rgba(255, 140, 0, 0) 70%);
+        }
+
+        .circle-1 {
+            width: 500px;
+            height: 500px;
+            top: -200px;
+            right: -200px;
+        }
+
+        .circle-2 {
+            width: 300px;
+            height: 300px;
+            bottom: -100px;
+            left: -100px;
+        }
+
+        /* RESPONSIVIDADE */
+        @media (max-width: 768px) {
+            .sidebar-header {
+                width: 280px;
+                transform: translateX(-100%);
+                min-height: 100vh;
+            }
+
+            .sidebar-header.mobile-open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0 !important;
+                width: 100% !important;
+                padding-top: 20px;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .kanban-header {
+                padding: 80px 15px 15px 15px;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+                align-items: flex-start;
+            }
+
+            .kanban-container {
+                padding: 0 15px 30px;
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .mobile-menu-btn {
+                display: none;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .kanban-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .stats-container {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .actions-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .btn-recusar {
+                grid-column: span 2;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .stats-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-recusar {
+                grid-column: 1;
+            }
+
+            .action-btn {
+                width: 100%;
+            }
+
+            .pedido-card {
+                padding: 15px;
+            }
+
+            .detail-row {
+                font-size: 0.85rem;
+            }
+
+            .kanban-header {
+                padding: 80px 10px 10px 10px;
+            }
+
+            .kanban-container {
+                padding: 0 10px 20px;
+            }
+
+            .minimal-info {
+                gap: 10px;
+                flex-wrap: wrap;
+            }
+
+            .minimal-toggle {
+                width: 28px;
+                height: 28px;
+                font-size: 1rem;
+            }
+        }
+
+        /* INDICADOR VISUAL PARA O ÍCONE CLICÁVEL */
+        .sidebar-logo::after {
+            content: '↔';
+            position: absolute;
+            right: -25px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.9rem;
+            color: var(--primary);
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar-header.collapsed .sidebar-logo::after {
+            content: '↔';
+            opacity: 0.7;
+        }
+
+        .sidebar-logo:hover::after {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- BOTÃO PARA MENU MOBILE -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- HEADER LATERAL (SIDEBAR) - ÍCONE DA LOJA AGORA É CLICÁVEL -->
+    <aside class="sidebar-header" id="sidebarHeader">
+        <!-- TOPO DO SIDEBAR COM LOGO CLICÁVEL -->
+        <div class="sidebar-top">
+            <div class="sidebar-logo" id="logoToggle">
+                <i class="fas fa-store"></i> <!-- ÍCONE CLICÁVEL! -->
+                <span class="sidebar-logo-text">OLIVEIRA</span>
+            </div>
+
+        </div>
+
+        <!-- Navegação principal -->
+        <nav class="sidebar-nav">
+            <!-- Grupo de menu principal -->
+            <div class="nav-group">
+                <div class="nav-group-title">NAVEGAÇÃO</div>
+
+                <a href="/" class="nav-link">
+                    <i class="fas fa-eye"></i>
+                    <span class="nav-link-text">Ver Loja</span>
+                </a>
+
+                <a href="{% url 'produtos:painel_dono' %}" class="nav-link active">
+                    <i class="fas fa-gamepad"></i>
+                    <span class="nav-link-text">Painel de Operação</span>
+                </a>
+
+                <a href="{% url 'produtos:caderno' %}" class="nav-link">
+                    <i class="fas fa-book"></i>
+                    <span class="nav-link-text">Gestão</span>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Rodapé do sidebar -->
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="user-avatar">{{ user.username|make_list|first|upper }}</div>
+                <div class="user-info">
+                    <h4>{{ user.username }}</h4>
+                    <p>Administrador</p>
+                </div>
+            </div>
+
+            <form action="{% url 'admin:logout' %}" method="post" style="display: inline; width: 100%;">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Sair</span>
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL (KANBAN) -->
+    <main class="main-content">
+        <div class="bg-decoration">
+            <div class="bg-circle circle-1"></div>
+            <div class="bg-circle circle-2"></div>
+        </div>
+
+        <div class="kanban-header">
+            <div class="header-content">
+                <div class="title-section">
+                    <h1>Painel de Operação</h1>
+                    <p>Gerencie pedidos em tempo real com nosso sistema Kanban intuitivo</p>
+                </div>
+
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-value" id="count-novos">{{ novos|length }}</div>
+                        <div class="stat-label">Novos Pedidos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="count-confirmados">{{ confirmados|length }}</div>
+                        <div class="stat-label">Confirmados</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="count-finalizados">{{ finalizados|length }}</div>
+                        <div class="stat-label">Finalizados</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="kanban-container">
+            <!-- COLUNA 1: NOVOS PEDIDOS -->
+            <div class="column">
+                <div class="column-header">
+                    <div class="column-title">
+                        <div class="column-icon">
+                            <i class="fas fa-inbox"></i>
+                        </div>
+                        <span>Novos Pedidos</span>
+                    </div>
+                    <div class="column-count" id="count-col-novos">{{ novos|length }}</div>
+                </div>
+
+                <div class="cards-container" id="coluna-novos">
+                    {% for pedido in novos %}
+                    <div class="pedido-card {% if forloop.first %}new{% endif %}">
+                        <div class="pedido-header">
+                            <div>
+                                <div class="pedido-id">#{{ pedido.id }}</div>
+                                <div class="pedido-cliente">{{ pedido.nome_cliente }}</div>
+                                <div class="pedido-time">
+                                    <i class="fas fa-clock"></i>
+                                    <span>{% if pedido.data %}{{ pedido.data|date:"H:i" }}{% else %}Agora{% endif %}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pedido-details">
+                            <div class="detail-row">
+                                <i class="fas fa-phone detail-icon"></i>
+                                <span>{{ pedido.telefone }}</span>
+                            </div>
+                            <div class="detail-row">
+                                <i class="fas fa-shopping-cart detail-icon"></i>
+                                <span>{{ pedido.itens_resumo }}</span>
+                            </div>
+                            <div class="detail-row">
+                                <i class="fas fa-money-bill-wave detail-icon"></i>
+                                <span><strong>R$ {{ pedido.total }}</strong></span>
+                            </div>
+                        </div>
+
+                        {% if pedido.itens_detalhados %}
+                        <div class="itens-list">
+                            <div class="itens-title">
+                                <i class="fas fa-list"></i>
+                                <span>Itens do Pedido</span>
+                            </div>
+                            <div class="itens-content">
+                                {{ pedido.itens_detalhados }}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <div class="actions-grid">
+                            {% if pedido.telefone %}
+                            <a href="https://api.whatsapp.com/send?phone=55{{ pedido.telefone }}&text=Olá {{ pedido.nome_cliente|urlencode }}! 👋%0A%0ARecebemos seu pedido nº {{ pedido.id }}:%0A%0A*Itens:*%0A{{ pedido.itens_resumo|urlencode }}%0A%0A*Total:* R$ {{ pedido.total }}%0A%0A---%0A*PAGAMENTO*%0APara confirmação, basta realizar o PIX para a chave: *[SUA CHAVE PIX AQUI]*%0A%0ALogo após o envio do comprovante, seu pedido sai para entrega! 🚀"
+                               target="_blank"
+                               class="action-btn btn-whatsapp">
+                                <i class="fab fa-whatsapp"></i>
+                                <span>Atender</span>
+                            </a>
+                            {% endif %}
+
+                            <a href="{% url 'produtos:imprimir_pedido' pedido.id %}"
+                               target="_blank"
+                               class="action-btn btn-print">
+                                <i class="fas fa-print"></i>
+                                <span>Imprimir</span>
+                            </a>
+
+                            <a href="{% url 'produtos:mudar_status' pedido.id 'confirmado' %}"
+                               class="action-btn btn-confirm">
+                                <i class="fas fa-check"></i>
+                                <span>Aceitar</span>
+                            </a>
+                        </div>
+
+                        <button onclick="if(confirm('Tem certeza que deseja recusar e apagar este pedido?')) { window.location.href='{% url 'produtos:recusar_pedido' pedido.id %}'; }"
+                                class="btn-recusar">
+                            <i class="fas fa-times"></i>
+                            <span>Recusar Pedido</span>
+                        </button>
+                    </div>
+                    {% empty %}
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-inbox"></i>
+                        </div>
+                        <div class="empty-text">Nenhum pedido novo</div>
+                        <div class="empty-subtext">
+                            Novos pedidos aparecerão aqui automaticamente
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- COLUNA 2: CONFIRMADOS -->
+            <div class="column">
+                <div class="column-header">
+                    <div class="column-title">
+                        <div class="column-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <span>Confirmados</span>
+                    </div>
+                    <div class="column-count" id="count-col-confirmados">{{ confirmados|length }}</div>
+                </div>
+
+                <div class="cards-container" id="coluna-confirmados">
+                    {% for pedido in confirmados %}
+                    <details class="minimal-card">
+                        <summary class="minimal-summary">
+                            <div class="minimal-info">
+                                <div class="minimal-id">#{{ pedido.id }}</div>
+                                <div class="minimal-cliente">{{ pedido.nome_cliente }}</div>
+                            </div>
+                            <!-- ÍCONE DE VENDINHA NO LUGAR DA SETA -->
+                            <div class="minimal-toggle">
+                                <i class="fas fa-store"></i>
+                            </div>
+                        </summary>
+
+                        <div class="minimal-content">
+                            {% if pedido.endereco %}
+                            <div class="detail-row">
+                                <i class="fas fa-map-marker-alt detail-icon"></i>
+                                <span>{{ pedido.endereco }}</span>
+                            </div>
+                            {% endif %}
+
+                            <div class="detail-row">
+                                <i class="fas fa-phone detail-icon"></i>
+                                <span>{{ pedido.telefone }}</span>
+                            </div>
+
+                            {% if pedido.itens_resumo %}
+                            <div class="detail-row">
+                                <i class="fas fa-shopping-cart detail-icon"></i>
+                                <span>{{ pedido.itens_resumo }}</span>
+                            </div>
+                            {% endif %}
+
+                            <div class="detail-row">
+                                <i class="fas fa-money-bill-wave detail-icon"></i>
+                                <span><strong>Total: R$ {{ pedido.total }}</strong></span>
+                            </div>
+
+                            <a href="{% url 'produtos:mudar_status' pedido.id 'finalizado' %}"
+                               class="action-btn btn-finalizar">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Finalizar (mover para Finalizados)</span>
+                            </a>
+                        </div>
+                    </details>
+                    {% empty %}
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <div class="empty-text">Nenhum pedido confirmado</div>
+                        <div class="empty-subtext">
+                            Aceite pedidos na coluna "Novos Pedidos"
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- COLUNA 3: FINALIZADOS -->
+            <div class="column">
+                <div class="column-header">
+                    <div class="column-title">
+                        <div class="column-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <span>Finalizados</span>
+                    </div>
+                    <div class="column-count" id="count-col-finalizados">{{ finalizados|length }}</div>
+                </div>
+
+                <div class="cards-container" id="coluna-finalizados">
+                    {% for pedido in finalizados %}
+                    <div class="minimal-card">
+                        <div class="minimal-summary">
+                            <div class="minimal-info">
+                                <div class="minimal-id">#{{ pedido.id }}</div>
+                                <div class="minimal-cliente">{{ pedido.nome_cliente }}</div>
+                                <div style="color: #06D6A0; font-size: 0.8rem;">
+                                    <i class="fas fa-check-circle"></i> Finalizado
+                                </div>
+                            </div>
+                            <!-- ÍCONE DE VENDINHA NO LUGAR DA SETA -->
+                            <div class="minimal-toggle">
+                                <i class="fas fa-store"></i>
+                            </div>
+                        </div>
+
+                        <div class="minimal-content">
+                            <div class="detail-row">
+                                <i class="fas fa-phone detail-icon"></i>
+                                <span>{{ pedido.telefone }}</span>
+                            </div>
+
+                            {% if pedido.itens_resumo %}
+                            <div class="detail-row">
+                                <i class="fas fa-shopping-cart detail-icon"></i>
+                                <span>{{ pedido.itens_resumo }}</span>
+                            </div>
+                            {% endif %}
+
+                            <div class="detail-row">
+                                <i class="fas fa-money-bill-wave detail-icon"></i>
+                                <span><strong>Total: R$ {{ pedido.total }}</strong></span>
+                            </div>
+
+                            <!-- BOTÃO SEM CONFIRMAÇÃO - AGORA DIRETO E FUNCIONAL -->
+                            <a href="{% url 'produtos:registrar_caderno' pedido.id %}"
+                               class="btn-registrar-caderno">
+                                <i class="fas fa-book"></i>
+                                <span>Registrar no Caderno</span>
+                            </a>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="empty-text">Histórico de Pedidos</div>
+                        <div class="empty-subtext">
+                            Os pedidos finalizados aparecerão aqui automaticamente
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // FUNCIONALIDADES DO SIDEBAR
+        const sidebarHeader = document.getElementById('sidebarHeader');
+        const logoToggle = document.getElementById('logoToggle');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+
+        // 1. RECOLHER/EXPANDIR SIDEBAR CLICANDO NO ÍCONE DA LOJA
+        if (logoToggle) {
+            logoToggle.addEventListener('click', function() {
+                sidebarHeader.classList.toggle('collapsed');
+            });
+        }
+
+        // 2. ABRIR/FECHAR MENU MOBILE (mobile)
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', function() {
+                sidebarHeader.classList.toggle('mobile-open');
+            });
+        }
+
+        // 3. FECHAR MENU MOBILE AO CLICAR FORA
+        document.addEventListener('click', function(event) {
+            const isClickInsideSidebar = sidebarHeader.contains(event.target);
+            const isClickOnMobileButton = mobileMenuBtn ? mobileMenuBtn.contains(event.target) : false;
+
+            if (window.innerWidth <= 768 &&
+                !isClickInsideSidebar &&
+                !isClickOnMobileButton &&
+                sidebarHeader.classList.contains('mobile-open')) {
+                sidebarHeader.classList.remove('mobile-open');
+            }
+        });
+
+        // 4. FUNÇÃO DE NOTIFICAÇÃO
+        function mostrarNotificacao(mensagem) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.innerHTML = `
+                <div class="notification-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <div class="notification-content">
+                    <h4>Novo Pedido!</h4>
+                    <p>${mensagem}</p>
+                </div>
+            `;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+
+        // 5. VERIFICAÇÃO DE NOVOS PEDIDOS
+        let quantidadeAntiga = {{ novos|length }};
+        let estaAtualizando = false;
+
+        function verificarNovosPedidos() {
+            if (estaAtualizando) return;
+
+            estaAtualizando = true;
+
+            fetch(window.location.href, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Cache-Control': 'no-cache'
+                }
+            })
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+
+                    let novaQuantidade = {{ novos|length }};
+                    const countElement = doc.querySelector('#count-novos');
+
+                    if (countElement) {
+                        novaQuantidade = parseInt(countElement.textContent) || 0;
+                    }
+
+                    if (!isNaN(novaQuantidade) && novaQuantidade > quantidadeAntiga) {
+                        const diferenca = novaQuantidade - quantidadeAntiga;
+                        mostrarNotificacao(`Você tem ${diferenca} novo(s) pedido(s)!`);
+                        quantidadeAntiga = novaQuantidade;
+
+                        // Aguardar 3 segundos e recarregar
+                        setTimeout(() => {
+                            location.reload();
+                        }, 3000);
+                    } else if (!isNaN(novaQuantidade) && novaQuantidade < quantidadeAntiga) {
+                        quantidadeAntiga = novaQuantidade;
+                        location.reload();
+                    }
+
+                    estaAtualizando = false;
+                })
+                .catch(error => {
+                    console.error('Erro ao verificar novos pedidos:', error);
+                    estaAtualizando = false;
+                });
+        }
+
+        // Verificar a cada 15 segundos
+        setInterval(verificarNovosPedidos, 15000);
+
+        // 6. CORREÇÃO DO BOTÃO REGISTRAR - AGORA FUNCIONAL
+        document.querySelectorAll('.btn-registrar-caderno').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                // Não prevenir o comportamento padrão - permitir que o link funcione
+                // Apenas adicionar feedback visual
+
+                // Adicionar efeito visual de carregamento
+                const originalHTML = this.innerHTML;
+
+                // Criar efeito de loading
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registrando...';
+                this.style.pointerEvents = 'none';
+
+                // Permitir que o link funcione normalmente
+                // O navegador seguirá para a URL normalmente
+
+                // Restaurar após 3 segundos (apenas para backup caso algo falhe)
+                setTimeout(() => {
+                    this.innerHTML = originalHTML;
+                    this.style.pointerEvents = 'auto';
+                }, 3000);
+            });
+        });
+
+        // 7. MELHORIA: ANIMAÇÃO NOS ÍCONES DE VENDINHA
+        document.querySelectorAll('.minimal-toggle').forEach(toggle => {
+            toggle.addEventListener('click', function(e) {
+                // Impedir que o clique no toggle feche o details
+                e.stopPropagation();
+
+                const details = this.closest('details');
+                if (details) {
+                    if (details.hasAttribute('open')) {
+                        details.removeAttribute('open');
+                    } else {
+                        details.setAttribute('open', '');
+                    }
+                }
+            });
+        });
+
+        // 8. AJUSTES RESPONSIVOS
+        function ajustarLayoutResponsivo() {
+            if (window.innerWidth <= 768) {
+                document.querySelector('.main-content').style.paddingTop = '70px';
+            } else {
+                document.querySelector('.main-content').style.paddingTop = '0';
+            }
+        }
+
+        // 9. INICIALIZAÇÃO
+        window.addEventListener('load', function() {
+            ajustarLayoutResponsivo();
+
+            // Verificar novos pedidos após 1 segundo
+            setTimeout(verificarNovosPedidos, 1000);
+
+            // Adicionar efeito hover nos ícones de vendinha
+            document.querySelectorAll('.minimal-toggle').forEach(toggle => {
+                toggle.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.1)';
+                });
+
+                toggle.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+
+            // Feedback visual para o ícone da logo
+            if (logoToggle) {
+                logoToggle.addEventListener('mouseenter', function() {
+                    this.style.cursor = 'pointer';
+                });
+
+                logoToggle.addEventListener('mouseleave', function() {
+                    this.style.cursor = 'pointer';
+                });
+            }
+
+            console.log('Painel de Operação carregado com sucesso!');
+        });
+
+        window.addEventListener('resize', ajustarLayoutResponsivo);
+
+        // 10. CORREÇÃO PARA OS BOTÕES DE RECUSAR
+        document.querySelectorAll('.btn-recusar').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                // Manter a confirmação apenas para recusar
+                if (!confirm('Tem certeza que deseja recusar e apagar este pedido?')) {
+                    e.preventDefault();
+                }
+            });
+        });
+
+        // 11. FEEDBACK VISUAL PARA OS ÍCONES DE VENDINHA
+        document.querySelectorAll('.minimal-card').forEach(card => {
+            const toggle = card.querySelector('.minimal-toggle');
+            if (toggle) {
+                card.addEventListener('toggle', function() {
+                    if (this.open) {
+                        toggle.style.background = 'rgba(255, 140, 0, 0.3)';
+                        toggle.innerHTML = '<i class="fas fa-store" style="color: var(--primary-light)"></i>';
+                    } else {
+                        toggle.style.background = 'rgba(255, 140, 0, 0.1)';
+                        toggle.innerHTML = '<i class="fas fa-store" style="color: var(--primary)"></i>';
+                    }
+                });
+            }
+        });
+
+        // 12. ATALHO DE TECLADO PARA RECOLHER/EXPANDIR (ESC)
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && window.innerWidth > 768) {
+                sidebarHeader.classList.toggle('collapsed');
+            }
+        });
+    </script>
+</body>
+</html>
